@@ -10,8 +10,9 @@ Prefetching health on every row hover causes unnecessary API traffic from accide
 
 ## Decision
 
-- Keep a **prefetch button** beside the customer name.
+- Keep a **prefetch control** beside the customer name — pill **Open** + chevron.
 - Prefetch health on that control’s hover (or focus); write into the drawer client cache.
+- Clicking the pill opens the drawer (`stopPropagation` so the row handler is not double-fired).
 - Row click opens the drawer without requiring prefetch.
 - Do not prefetch on whole-row hover.
 

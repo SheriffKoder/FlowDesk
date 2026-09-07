@@ -43,3 +43,13 @@ export {
   CustomerHealthError,
   type CustomerHealthErrorProps,
 } from "./ui/customer-health-error";
+
+export {
+  CustomerPrefetchButton,
+  type CustomerPrefetchButtonProps,
+} from "./ui/customer-prefetch-button";
+
+export {
+  clearPrefetchInflight,
+  prefetchCustomerHealth,
+} from "./lib/prefetch-customer-health";

@@ -36,6 +36,7 @@ export function CustomerTable({
     sorts,
     isPending,
     onSortToggle: onSortToggle ?? (() => {}),
+    onOpenCustomer: onRowClick,
   });
 
   return (

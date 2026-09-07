@@ -3,6 +3,7 @@
  *
  * Columns are built from {@link customerHealthListConfig} + entity field catalog.
  * Sortable headers compose shared `SortButton`; multi-level URL sorts stay in the shell.
+ * Name cell includes the Open prefetch pill (feature `CustomerPrefetchButton`).
  */
 
 import {
@@ -10,6 +11,7 @@ import {
   customerSegmentLabel,
   type CustomerListItem,
 } from "@/entities/customer";
+import { CustomerPrefetchButton } from "@/features/customer-drawer";
 import { SortButton, type TableColumnDef } from "@/shared/ui";
 
 import {
@@ -134,8 +136,39 @@ function sortableHeader(options: {
 export type BuildCustomerTableColumnsOptions = {
   sorts: readonly ListSortSpec[];
   onSortToggle: (key: ListSortKey) => void;
+  /** Open details for a row (Open pill click; same as row activation). */
+  onOpenCustomer?: (row: CustomerListRow) => void;
   isPending?: boolean;
 };
+
+/**
+ * Name cell: truncated label + Open prefetch pill (ADR-005).
+ * Truncation lives on the span so the pill never gets clipped by `truncate` on `<td>`.
+ */
+function nameCell(
+  row: CustomerListRow,
+  options: BuildCustomerTableColumnsOptions,
+) {
+  const name = formatText(row.name);
+
+  return (
+    <div className="flex min-w-0 items-center gap-2">
+      <span className="min-w-0 flex-1 truncate" title={name}>
+        {name}
+      </span>
+      {options.onOpenCustomer ? (
+        <CustomerPrefetchButton
+          customerId={row.id}
+          customerName={row.name}
+          disabled={options.isPending}
+          onOpen={() => {
+            options.onOpenCustomer?.(row);
+          }}
+        />
+      ) : null}
+    </div>
+  );
+}
 
 function buildColumn(
   column: CustomerHealthColumnConfig,
@@ -149,6 +182,8 @@ function buildColumn(
     (customerHealthListConfig.sort.allowed as readonly string[]).includes(
       field.key,
     );
+
+  const isNameColumn = column.columnId === "name";
 
   return {
     id: column.columnId,
@@ -164,7 +199,10 @@ function buildColumn(
     ariaSort: sortable
       ? listSortAriaForColumn(options.sorts, sortKey)
       : undefined,
-    cell: (row) => formatCell(column.format, row, field.path),
+    cell: (row) =>
+      isNameColumn
+        ? nameCell(row, options)
+        : formatCell(column.format, row, field.path),
     className: column.className,
     headerClassName: column.headerClassName ?? column.className,
   };
@@ -177,10 +215,11 @@ function buildColumn(
 export function buildCustomerTableColumns({
   sorts,
   onSortToggle,
+  onOpenCustomer,
   isPending = false,
 }: BuildCustomerTableColumnsOptions): TableColumnDef<CustomerListRow>[] {
   return customerHealthListConfig.columns.map((column) =>
-    buildColumn(column, { sorts, onSortToggle, isPending }),
+    buildColumn(column, { sorts, onSortToggle, onOpenCustomer, isPending }),
   );
 }
 

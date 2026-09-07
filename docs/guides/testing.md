@@ -20,6 +20,7 @@ tests/
 | Debounce helper | quiet period, cancel, flush | Landed (`debounce.test.ts`) |
 | Drawer hook / state | open/close, URL mirror, hydrate from `customerId`, derived selection | Landed (`customer-drawer-state.test.ts`) |
 | Health client cache | set / get / hit after prefetch; fetch write-through; offline / 404 kinds | Landed (`customer-health-cache.test.ts`) |
+| Silent health prefetch | skip cached; dedupe in-flight; failures never throw | Landed (`prefetch-customer-health.test.ts`) |
 
 Skip heavy tests on pure presentational chrome unless it encodes real rules.
 

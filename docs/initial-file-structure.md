@@ -77,9 +77,9 @@ views/
 
 features/
 └── customer-drawer/               # details open/close + URL mirror + health body
-    ├── ui/                        # CustomerDetailsPanel, health body/error
+    ├── ui/                        # CustomerDetailsPanel, health body/error, Open prefetch pill
     ├── hooks/                     # useCustomerDrawer, useCustomerHealth
-    ├── lib/                       # health error copy
+    ├── lib/                       # health error copy, silent prefetch helper
     └── model/                     # pure open/hydrate/selection helpers
 
 entities/
@@ -128,7 +128,7 @@ Only `index.ts` is public per slice. No deep imports across features/entities.
 
 | Path | Contains |
 |---|---|
-| `tests/unit/` | Pure rules: URL contract (**landed**), schemas/transforms, drawer state (**landed**), health cache (**landed**) |
+| `tests/unit/` | Pure rules: URL contract (**landed**), schemas/transforms, drawer state (**landed**), health cache (**landed**), silent prefetch (**landed**) |
 | `tests/integration/` | Boundary tests: list API, health API, searchParams → list props wiring |
 | `tests/fixtures/` | Shared customer/health fixtures reused by API + tests |
 

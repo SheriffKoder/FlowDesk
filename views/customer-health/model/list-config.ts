@@ -113,7 +113,8 @@ export const customerHealthListConfig = {
       fieldId: "name",
       columnId: "name",
       format: "text",
-      className: "w-[28%] max-w-0 truncate",
+      /** Width only — truncate is on the name span so the Open pill stays visible. */
+      className: "w-[28%] max-w-0",
       headerClassName: "w-[28%]",
     },
     {

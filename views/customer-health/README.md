@@ -18,12 +18,12 @@ page.tsx (Server)
             └─ CustomerListShell          ← client island
                  ├─ CustomerHealthToolbar ← full width
                  ├─ table + details row
-                 │    ├─ CustomerTable     ← row click → open details
+                 │    ├─ CustomerTable     ← row click → open; name Open pill prefetches
                  │    └─ CustomerDetailsPanel  ← shared DetailsPanel (in-layout)
                  └─ Pagination            ← full width
 ```
 
-`CustomerTable` owns column config and list props; `shared/ui` `DataTable` stays dumb (columns, data, onRowClick, selection, `aria-sort`).
+`CustomerTable` owns column config and list props; `shared/ui` `DataTable` stays dumb (columns, data, onRowClick, selection, `aria-sort`). Name cells render the feature `CustomerPrefetchButton` (pill Open + chevron): hover/focus warms the health cache; click opens details with `stopPropagation` so the row handler is not double-fired.
 
 Details open uses `useCustomerDrawer` (feature): local state first, then URL `customerId` mirror; selection derived from open id only. `CustomerDetailsPanel` loads health via `useCustomerHealth` (entity cache-first fetch); loading / error+retry / events·usage·notes stay panel-local. Toolbar and pagination stay outside the table/panel row. Narrow viewports hide the table and let the panel fill that middle row.
 
