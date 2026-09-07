@@ -3,26 +3,26 @@
 /**
  * @file shared/ui/sort-button/sort-button.tsx
  *
- * Purpose: Dumb dual-arrow sort toggle for table header cells.
+ * Purpose: Dumb dual-triangle sort toggle for table header cells.
  * Used in: Customer Health column headers (and any sortable DataTable).
  * Used for: Visual + a11y affordance; no router/URL knowledge.
  *
  * Function Index:
- * - SortButton(props) → up/down arrow button
+ * - SortButton(props) → up/down filled-triangle button
  *
  * Steps:
- * 1. Derive active arrow + next-action title from `direction`.
+ * 1. Derive active triangle + next-action title from `direction`.
  * 2. Emit `onToggle` on click (caller cycles / appends URL sorts).
  */
 
-import { MoveDown, MoveUp } from "lucide-react";
+import { Triangle } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
 import type { SortButtonProps } from "./types";
 
 /**
- * Compact sort control: inactive muted arrows; active direction uses primary.
+ * Compact sort control: stacked filled triangles; active direction uses primary.
  * Optional priority badge for multi-level sorts. Adapted from url-kit SortButton.
  */
 export function SortButton({
@@ -63,25 +63,27 @@ export function SortButton({
       aria-label={sortActionTitle}
       title={sortActionTitle}
     >
-      <span className="relative flex flex-row items-center" aria-hidden>
-        <MoveUp
-          size={12}
-          strokeWidth={2.5}
+      <span className="relative flex flex-col items-center gap-px" aria-hidden>
+        <Triangle
+          size={8}
+          strokeWidth={0}
+          fill="currentColor"
           className={cn(
-            "-mr-0.5 transition-colors",
+            "transition-colors",
             isAscending ? "text-primary" : "text-muted-foreground/50",
           )}
         />
-        <MoveDown
-          size={12}
-          strokeWidth={2.5}
+        <Triangle
+          size={8}
+          strokeWidth={0}
+          fill="currentColor"
           className={cn(
-            "-ml-1 transition-colors",
+            "rotate-180 transition-colors",
             isDescending ? "text-primary" : "text-muted-foreground/50",
           )}
         />
         {priority !== null && (
-          <span className="absolute -right-0.5 -top-2 flex h-3 w-3 items-center justify-center rounded-full bg-muted-foreground text-[8px] font-medium text-background">
+          <span className="absolute -right-1.5 -top-2 flex h-3 w-3 items-center justify-center rounded-full bg-muted-foreground text-[8px] font-medium text-background">
             {priority + 1}
           </span>
         )}

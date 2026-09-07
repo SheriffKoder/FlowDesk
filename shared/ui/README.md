@@ -9,7 +9,7 @@ Cross-domain presentational primitives (no business logic).
 | `Pagination` (`pagination/`) | Footer, page size DropdownMenu, prev/next |
 | `SearchInput` (`search-input/`) | Label, placeholder, debounce + URL rehydrate |
 | `FilterOptionButtons` (`filter-option-buttons/`) | Config-driven multi/single toggle button row |
-| `SortButton` (`sort-button/`) | Dual-arrow header sort toggle (dumb) |
+| `SortButton` (`sort-button/`) | Dual filled-triangle header sort toggle (dumb) |
 | `DetailsPanel` (`details-panel/`) | In-layout side panel: title, close, focus trap, Escape (not overlay) |
 
 Import via `@/shared/ui` (or `@/shared`) — no deep imports across slices.
