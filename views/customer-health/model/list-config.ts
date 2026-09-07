@@ -36,7 +36,13 @@ export type CustomerHealthColumnConfig = {
   /** Table column id (camelCase for DOM / React keys). */
   columnId: string;
   format: CustomerHealthCellFormat;
+  /** Applied to `<td>` (and `<th>` when `headerClassName` omitted). */
   className?: string;
+  /**
+   * Applied to `<th>` only. Prefer width here when cell classes include
+   * `truncate` / `max-w-0` so header labels are not clipped.
+   */
+  headerClassName?: string;
 };
 
 /////////////////////////////////////////////////////////////
@@ -107,35 +113,43 @@ export const customerHealthListConfig = {
       fieldId: "name",
       columnId: "name",
       format: "text",
-      className: "max-w-[14rem] truncate",
+      className: "w-[28%] max-w-0 truncate",
+      headerClassName: "w-[28%]",
     },
     {
       fieldId: "mrr",
       columnId: "mrr",
       format: "currencyUsd",
-      className: "tabular-nums",
+      className: "w-[12%] tabular-nums",
+      headerClassName: "w-[12%]",
     },
     {
       fieldId: "last_active",
       columnId: "lastActive",
       format: "shortDate",
-      className: "text-muted-foreground",
+      className: "w-[16%] text-muted-foreground",
+      headerClassName: "w-[16%]",
     },
     {
       fieldId: "health",
       columnId: "health",
       format: "number",
-      className: "font-medium tabular-nums",
+      className: "w-[10%] font-medium tabular-nums",
+      headerClassName: "w-[10%]",
     },
     {
       fieldId: "owner",
       columnId: "owner",
       format: "text",
+      className: "w-[18%] max-w-0 truncate",
+      headerClassName: "w-[18%]",
     },
     {
       fieldId: "segment",
       columnId: "segment",
       format: "segmentLabel",
+      className: "w-[16%]",
+      headerClassName: "w-[16%]",
     },
   ] as const satisfies ReadonlyArray<CustomerHealthColumnConfig>,
 } as const;

@@ -166,6 +166,7 @@ function buildColumn(
       : undefined,
     cell: (row) => formatCell(column.format, row, field.path),
     className: column.className,
+    headerClassName: column.headerClassName ?? column.className,
   };
 }
 

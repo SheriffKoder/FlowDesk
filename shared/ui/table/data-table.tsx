@@ -37,9 +37,9 @@ export function DataTable<T>({
         One scrollport: sticky thead stays put while tbody rows slide under it.
         `border-separate` keeps sticky headers reliable (collapse breaks sticky in browsers).
       */}
-      <div className="min-h-0 flex-1 overflow-auto">
+      <div className="custom-scrollbar min-h-0 flex-1 overflow-auto">
         <table
-          className="w-full min-w-[40rem] border-separate border-spacing-0 text-left text-sm"
+          className="w-full min-w-[40rem] table-fixed border-separate border-spacing-0 text-left text-sm"
           aria-label={ariaLabel}
         >
           <thead className="sticky top-0 z-10">
