@@ -1,11 +1,15 @@
 # Shared UI
 
-Expected Customer Health primitives (added in later tickets):
+Cross-domain presentational primitives (no business logic).
 
-- `page-header` — title + supporting paragraph
-- Configurable `table` — header + rows from column config
-- `pagination-*` — footer, page size, navigation
-- Search input — param label, placeholder, debounce
-- Filter control — button + dropdown; column/label/options
-- Sort control — header-cell island; URL sort/order
-- Panel / drawer shell — children slot; a11y focus trap
+| Component | Role |
+|---|---|
+| `DataTable` (`table/`) | Configurable table: `columns`, `data`, `getRowId`, optional `onRowClick` / `selectedRowId` / `isPending` |
+| `page-header` | Title + supporting paragraph *(later)* |
+| `pagination-*` | Footer, page size, navigation *(later)* |
+| Search input | Param label, placeholder, debounce *(later)* |
+| Filter control | Button + dropdown *(later)* |
+| Sort control | Header-cell island *(later)* |
+| Panel / drawer shell | Children slot; a11y focus trap *(later)* |
+
+Import via `@/shared/ui` (or `@/shared`) — no deep imports across slices.
