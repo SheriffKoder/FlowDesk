@@ -18,7 +18,7 @@ tests/
 | URL contract | parse/serialize, defaults, reset `page` → 1, clamp, sort header cycle | Landed (`list-url-params.test.ts`) |
 | Schemas / transforms | list + health Zod; raw → domain | Landed (`customer-schemas.test.ts`) |
 | Debounce helper | quiet period, cancel, flush | Landed (`debounce.test.ts`) |
-| Drawer hook | open/close, URL mirror, hydrate from `customerId` (mocked router) | Expected |
+| Drawer hook / state | open/close, URL mirror, hydrate from `customerId`, derived selection | Landed (`customer-drawer-state.test.ts`) |
 | Health client cache | set / get / hit after prefetch | Expected |
 
 Skip heavy tests on pure presentational chrome unless it encodes real rules.

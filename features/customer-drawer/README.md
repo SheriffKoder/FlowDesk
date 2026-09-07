@@ -1,9 +1,24 @@
-# Feature — Customer drawer
+# Feature — Customer details panel
 
-Optional workflow slice for the Customer Health detail drawer (`useCustomerDrawer`, host wiring).
+Workflow for opening customer details **beside** the Customer Health list (in-layout `DetailsPanel`, not an overlay drawer).
 
-Scaffolded early so the drawer hook has a home when Foundation / Drawer tickets land. Keep empty until the hook needs isolation from the view.
+**Owns:** open/close workflow (`useCustomerDrawer`), URL mirror/hydrate for `customerId`, feature chrome (`CustomerDetailsPanel`).
 
-**Owns:** drawer open/close workflow, URL mirror/hydrate for `customerId` (when extracted from the view).
+**Does not own:** health fetch/cache (entity `client/`), shared panel primitives (`shared/ui/details-panel`), list URL parse/serialize (view).
 
-**Does not own:** health fetch/cache (entity `client/`), panel chrome primitives (`shared/ui`).
+## Composition
+
+```
+CustomerListShell
+  useCustomerDrawer({ urlCustomerId, onMirrorCustomerId: patchParams })
+  ├─ list column (toolbar / table / pagination)
+  └─ CustomerDetailsPanel → DetailsPanel
+```
+
+## Rules (ADR-003)
+
+1. Local state opens the panel immediately; URL `customerId` mirrors afterward.
+2. Cold load / back-forward with `customerId` hydrates open state.
+3. Row selection = open `customerId` only (no duplicate selected-row store).
+
+Health body sections land in the next ticket (Step 11).

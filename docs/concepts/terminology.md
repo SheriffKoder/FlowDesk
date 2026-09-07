@@ -11,7 +11,7 @@
 | Pending dim | Table stays mounted; opacity/busy while `useTransition` is pending |
 | True empty | No customers in the system/result set at all |
 | Filtered empty | Customers exist but none match search/segment |
-| Drawer host | Client boundary that owns drawer hook + panel shell |
+| Drawer host / details panel | Client boundary that owns `useCustomerDrawer` + in-layout `DetailsPanel` (not an overlay) |
 | DataTable | Shared dumb table (`shared/ui/table`) — columns, data, row click/selection; no domain logic |
 | Prefetch control | Dedicated button that warms health cache on hover/focus |
 | Layer split | Group by kind (`schema/`, `ui/`, …) — default |

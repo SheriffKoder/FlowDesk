@@ -1,10 +1,9 @@
 /**
  * @file Server composition shell for Customer Health.
- * Canvas page + surface table; no decorative card wrapping the whole page.
+ * Canvas page + surface table; details panel opens in-layout beside the list.
  */
 
 import type { CustomerListPageData } from "../server/load-customer-list";
-import { CustomerDrawerHost } from "./customer-drawer-host";
 import { CustomerListShell } from "./customer-list-shell";
 import { PageHeader } from "./page-header";
 
@@ -21,7 +20,6 @@ export function CustomerHealthPage({ list }: CustomerHealthPageProps) {
           <CustomerListShell list={list} />
         </div>
       </main>
-      <CustomerDrawerHost />
     </div>
   );
 }

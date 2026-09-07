@@ -9,7 +9,7 @@
 | Explicit list sort | Multi-level `sort=field:order,...` (append on new column click) |
 | Table pending UX | `useTransition` around router updates (`scroll: false`) |
 | Search typing | Local input state + debounce → URL; rehydrate from URL on history nav |
-| Drawer open / selected customer | Local state (instant open); **selection = `customerId` only** |
+| Drawer open / selected customer | Local state (instant open); **selection = `customerId` only**; chrome is in-layout `DetailsPanel` (not overlay) |
 | Drawer share / restore / back | URL `customerId` mirrored from state; hydrate from URL on load |
 | Drawer health payload | Simple client fetch + in-memory cache (no TanStack this phase) |
 | Auth / theme | Existing context patterns |

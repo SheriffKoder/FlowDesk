@@ -19,3 +19,6 @@ export type {
 
 export { SortButton } from "./sort-button";
 export type { SortButtonProps, SortDirection } from "./sort-button";
+
+export { DetailsPanel } from "./details-panel";
+export type { DetailsPanelProps } from "./details-panel";

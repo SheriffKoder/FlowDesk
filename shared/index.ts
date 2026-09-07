@@ -4,6 +4,7 @@
 
 export {
   DataTable,
+  DetailsPanel,
   FilterOptionButtons,
   Pagination,
   SearchInput,
@@ -12,6 +13,7 @@ export {
 } from "./ui";
 export type {
   DataTableProps,
+  DetailsPanelProps,
   FilterOption,
   FilterOptionButtonsProps,
   PaginationProps,

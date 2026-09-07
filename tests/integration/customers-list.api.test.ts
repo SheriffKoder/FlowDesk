@@ -142,9 +142,9 @@ describe("GET /api/customers — pagination", () => {
 /////////////////////////////////////////////////////////////
 
 describe("GET /api/customers — explicit sort", () => {
-  it("honors explicit sort and order", async () => {
-    // URL sort/order wins over the triage default for that request.
-    const response = await getCustomers("sort=name&order=asc&page_size=50");
+  it("honors explicit multi-level sort", async () => {
+    // URL sort=name:asc wins over the triage default for that request.
+    const response = await getCustomers("sort=name:asc&page_size=50");
     const body = customerListResponseSchema.parse(await response.json());
     const names = body.data.map((row) => row.name);
     const sorted = [...names].sort((a, b) => a.localeCompare(b));

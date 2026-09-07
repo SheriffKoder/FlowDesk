@@ -70,16 +70,16 @@ app/
 views/
 └── customer-health/
     ├── README.md
-    ├── ui/                        # PageHeader, toolbar, CustomerTable, drawer host
+    ├── ui/                        # PageHeader, toolbar, CustomerTable, list shell (+ details)
     ├── hooks/
     ├── model/                     # list-config, list-url-params, columns, table props
     └── lib/                       # parse/serialize list URL, page reset/clamp, resolve sort
 
 features/
-└── customer-drawer/               # optional: drawer workflow when extracted
-    ├── ui/
+└── customer-drawer/               # details open/close + URL mirror (in-layout panel)
+    ├── ui/                        # CustomerDetailsPanel
     ├── hooks/                     # useCustomerDrawer
-    └── model/
+    └── model/                     # pure open/hydrate/selection helpers
 
 entities/
 └── customer/
@@ -101,7 +101,8 @@ shared/
 │   ├── pagination/                # Pagination footer (landed)
 │   ├── search-input/              # SearchInput debounce + rehydrate (landed)
 │   ├── filter-option-buttons/     # Multi/single option button row (landed)
-│   └── sort-button/               # Dual-arrow header sort toggle (landed)
+│   ├── sort-button/               # Dual-arrow header sort toggle (landed)
+│   └── details-panel/             # In-layout DetailsPanel + focus trap (landed)
 ├── lib/                           # debounce, cn, url helpers
 └── hooks/
 ```
@@ -116,7 +117,7 @@ shared/
 | Search input | Param label, placeholder, debounce | Landed |
 | Filter control | Multi-select option button row (`FilterOptionButtons`) | Landed |
 | Sort control | Header-cell `SortButton`; multi-level URL `sort=field:order,...` | Landed |
-| Panel / drawer shell | Children slot; a11y focus trap | Expected |
+| Details panel | In-layout side panel; focus trap, Escape, close (not overlay) | Landed |
 
 ## Public API rule
 
@@ -126,7 +127,7 @@ Only `index.ts` is public per slice. No deep imports across features/entities.
 
 | Path | Contains |
 |---|---|
-| `tests/unit/` | Pure rules: URL contract (**landed**), schemas/transforms, drawer hook (mocked router), health cache |
+| `tests/unit/` | Pure rules: URL contract (**landed**), schemas/transforms, drawer state (**landed**), health cache |
 | `tests/integration/` | Boundary tests: list API, health API, searchParams → list props wiring |
 | `tests/fixtures/` | Shared customer/health fixtures reused by API + tests |
 

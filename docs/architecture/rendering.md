@@ -3,7 +3,7 @@
 ## Default
 
 - **Server Components first** for the Customer Health route (`page.tsx`).
-- Introduce `"use client"` only at interactive islands (toolbar, sort controls, drawer host, prefetch button).
+- Introduce `"use client"` only at interactive islands (toolbar, sort controls, details panel / list shell, prefetch button).
 - Root layout only; no nested customers layout this phase.
 
 ## Route composition
@@ -13,9 +13,9 @@ page.tsx (Server)
   └─ loadCustomerList(searchParams)  ← views/customer-health/server
        └─ CustomerHealthPage
             ├─ PageHeader              ← server OK (view-local until shared page-header)
-            ├─ CustomerHealthToolbar   ← client (URL + useTransition)
-            ├─ CustomerTable           ← view wiring (columns in model/) → shared DataTable
-            └─ CustomerDrawerHost      ← client (open state + health fetch)
+            └─ CustomerListShell       ← client (list URL + details panel)
+                 ├─ toolbar / table / pagination
+                 └─ CustomerDetailsPanel → shared DetailsPanel (in-layout)
 ```
 
 List presentation is the dumb shared `DataTable` (`shared/ui/table`): `columns`, `data`, `getRowId`, optional `onRowClick` / `selectedRowId` / `isPending`. Domain column config stays in the view.
@@ -28,7 +28,7 @@ First paint loads rows via `loadCustomerList` (entity `listCustomers`); fixtures
 |---|---|
 | First route paint / hard navigation | `loading.tsx` (table-density skeletons) |
 | Same-route param change (search, segment, page, sort) | Keep rows; dim via `useTransition` `isPending`; `{ scroll: false }` |
-| Drawer open (cold) | Drawer-local loading / skeleton sections |
+| Drawer open (cold) | Panel-local loading / skeleton sections (in-layout details panel) |
 | Drawer open (warm prefetch) | Body paints from client cache |
 
 Respect `prefers-reduced-motion` when dim/transition animations are used.
@@ -44,7 +44,7 @@ Respect `prefers-reduced-motion` when dim/transition animations are used.
 
 - Long names: truncate + tooltip.
 - Missing cells (MRR / owner / last active): em dash, not blank shift.
-- Narrow viewports: horizontal table scroll; drawer may become a full-screen sheet.
+- Narrow viewports: horizontal table scroll; open details panel may fill the workspace (list column hidden).
 
 ## Boundaries
 

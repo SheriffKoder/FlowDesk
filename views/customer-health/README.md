@@ -2,7 +2,7 @@
 
 Route composition for the Customer Health overview page.
 
-**Owns:** page shell wiring (header, toolbar, table, drawer host), view-local URL contract helpers (`lib/` + `model/list-config.ts` / `list-url-params.ts`), and server list load (`server/load-customer-list.ts`).
+**Owns:** page shell wiring (header, toolbar, table, in-layout details panel), view-local URL contract helpers (`lib/` + `model/list-config.ts` / `list-url-params.ts`), and server list load (`server/load-customer-list.ts`).
 
 **Does not own:** customer domain schemas / field catalog, API handlers, or shared UI primitives.
 
@@ -15,16 +15,17 @@ page.tsx (Server)
   └─ loadCustomerList(searchParams)
        └─ CustomerHealthPage
             ├─ PageHeader                 ← server (view-local for now)
-            ├─ CustomerListShell          ← client island
-            │    ├─ CustomerHealthToolbar ← SearchInput + segment FilterOptionButtons
-            │    ├─ CustomerTable         ← SortButton headers → shared DataTable
-            │    └─ Pagination            ← page / page_size
-            └─ CustomerDrawerHost         ← client island (viewport-edge slot)
+            └─ CustomerListShell          ← client island
+                 ├─ CustomerHealthToolbar ← full width
+                 ├─ table + details row
+                 │    ├─ CustomerTable     ← row click → open details
+                 │    └─ CustomerDetailsPanel  ← shared DetailsPanel (in-layout)
+                 └─ Pagination            ← full width
 ```
 
 `CustomerTable` owns column config and list props; `shared/ui` `DataTable` stays dumb (columns, data, onRowClick, selection, `aria-sort`).
 
-Search uses shared `SearchInput` (debounce + rehydrate from URL). Segment uses shared `FilterOptionButtons` (multi-select chips → comma-joined `segment`). Sortable headers use shared `SortButton` (none → asc → desc → remove; **append** levels → `sort=mrr:desc,name:asc`). `applyListParamsPatch` resets `page` → 1; filtered empty copy when nothing matches. Absent sort params keep triage order (health-then-name) without lighting header arrows.
+Details open uses `useCustomerDrawer` (feature): local state first, then URL `customerId` mirror; selection derived from open id only. Toolbar and pagination stay outside the table/panel row. Narrow viewports hide the table and let the panel fill that middle row.
 
 ## Server list (Step 5)
 

@@ -10,6 +10,6 @@ Cross-domain presentational primitives (no business logic).
 | `SearchInput` (`search-input/`) | Label, placeholder, debounce + URL rehydrate |
 | `FilterOptionButtons` (`filter-option-buttons/`) | Config-driven multi/single toggle button row |
 | `SortButton` (`sort-button/`) | Dual-arrow header sort toggle (dumb) |
-| Panel / drawer shell | Children slot; a11y focus trap *(later)* |
+| `DetailsPanel` (`details-panel/`) | In-layout side panel: title, close, focus trap, Escape (not overlay) |
 
 Import via `@/shared/ui` (or `@/shared`) — no deep imports across slices.

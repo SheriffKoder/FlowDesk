@@ -59,7 +59,17 @@ export function useListUrl(params: CustomerHealthUrlParams): UseListUrlResult {
     //////////////////////////////////
 
     //////////////////////////////////
-    // 2. Soft-navigate without scrolling; keep current rows until RSC settles.
+    // 2. Soft-navigate without scrolling.
+    // Details `customerId` alone must not dim the table — panel opens from
+    // local state; URL is only a mirror (ADR-003).
+    const onlyCustomerId =
+      Object.keys(patch).length === 1 && patch.customerId !== undefined;
+
+    if (onlyCustomerId) {
+      router.push(href, { scroll: false });
+      return;
+    }
+
     startTransition(() => {
       router.push(href, { scroll: false });
     });

@@ -3,21 +3,25 @@
 /**
  * @file views/customer-health/ui/customer-list-shell.tsx
  *
- * Purpose: Client list island — toolbar, table, pagination, shared pending dim.
+ * Purpose: Client list island — toolbar, table, pagination, details panel.
  * Used in: `CustomerHealthPage` (server composition shell).
- * Used for: Wire URL list controls (`useListUrl`) into search, segment,
- *   sort headers, `Pagination`, and `CustomerTable` without putting router
- *   logic in the server page.
+ * Used for: Wire URL list controls + customer details open beside the table.
  *
  * Function Index:
- * - CustomerListShell({ list }) → toolbar + table + pagination
+ * - CustomerListShell({ list }) → toolbar / table+panel row / pagination
  *
  * Steps:
  * 1. Derive `isPending` / `patchParams` from current parsed URL params.
- * 2. Render search + segment toolbar, sortable table, and pagination footer.
- * 3. Search / segment / sort / page / page_size → `patchParams` → soft-nav.
+ * 2. `useCustomerDrawer` — local open first; mirror `customerId` via patch.
+ * 3. Toolbar + pagination stay full-width; only the table row shares space
+ *    with the in-layout details panel.
  */
 
+import { cn } from "@/lib/utils";
+import {
+  CustomerDetailsPanel,
+  useCustomerDrawer,
+} from "@/features/customer-drawer";
 import { Pagination } from "@/shared/ui";
 
 import { useListUrl } from "../hooks/use-list-url";
@@ -33,11 +37,23 @@ export type CustomerListShellProps = {
 };
 
 /**
- * Interactive list region: URL-driven search/sort/pagination and shared pending dim.
+ * Interactive list region: URL-driven controls + in-layout customer details.
  * Header stays on the server composition shell above this island.
  */
 export function CustomerListShell({ list }: CustomerListShellProps) {
   const { isPending, patchParams } = useListUrl(list.params);
+  const drawer = useCustomerDrawer({
+    urlCustomerId: list.params.customerId,
+    onMirrorCustomerId: (customerId) => {
+      patchParams({ customerId });
+    },
+  });
+
+  const selectedRow =
+    drawer.customerId == null
+      ? undefined
+      : list.rows.find((row) => row.id === drawer.customerId);
+  const detailsTitle = selectedRow?.name ?? "Customer details";
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-4">
@@ -51,16 +67,41 @@ export function CustomerListShell({ list }: CustomerListShellProps) {
           patchParams({ segment });
         }}
       />
-      <CustomerTable
-        rows={list.rows}
-        selectedRowId={list.params.customerId}
-        emptyKind={list.emptyKind}
-        isPending={isPending}
-        sorts={list.params.sorts}
-        onSortToggle={(key) => {
-          patchParams({ sorts: nextListSort(list.params.sorts, key) });
-        }}
-      />
+
+      <div className="flex min-h-0 flex-1 gap-4">
+        <div
+          className={cn(
+            "flex min-h-0 min-w-0 flex-1 flex-col",
+            drawer.open && "max-lg:hidden",
+          )}
+        >
+          <CustomerTable
+            rows={list.rows}
+            selectedRowId={drawer.selectedCustomerId}
+            emptyKind={list.emptyKind}
+            isPending={isPending}
+            sorts={list.params.sorts}
+            onSortToggle={(key) => {
+              patchParams({ sorts: nextListSort(list.params.sorts, key) });
+            }}
+            onRowClick={(row) => {
+              drawer.openCustomer(row.id);
+            }}
+          />
+        </div>
+
+        <CustomerDetailsPanel
+          open={drawer.open}
+          title={detailsTitle}
+          onClose={drawer.close}
+          className={cn(
+            "w-full shrink-0",
+            "lg:w-[28rem]",
+            drawer.open && "max-lg:flex-1",
+          )}
+        />
+      </div>
+
       <Pagination
         page={list.page}
         pageSize={list.pageSize}
