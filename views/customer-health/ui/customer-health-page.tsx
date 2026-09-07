@@ -5,8 +5,7 @@
 
 import type { CustomerListPageData } from "../server/load-customer-list";
 import { CustomerDrawerHost } from "./customer-drawer-host";
-import { CustomerHealthToolbar } from "./customer-health-toolbar";
-import { CustomerTable } from "./customer-table";
+import { CustomerListShell } from "./customer-list-shell";
 import { PageHeader } from "./page-header";
 
 export type CustomerHealthPageProps = {
@@ -15,16 +14,11 @@ export type CustomerHealthPageProps = {
 
 export function CustomerHealthPage({ list }: CustomerHealthPageProps) {
   return (
-    <div className="min-h-screen bg-background">
-      <main className="mx-auto max-w-7xl px-6 pb-12 pt-12">
+    <div className="flex h-svh flex-col overflow-hidden bg-background">
+      <main className="mx-auto flex min-h-0 w-full max-w-7xl flex-1 flex-col px-6 pb-6 pt-12">
         <PageHeader />
-        <div className="mt-6 flex flex-col gap-4">
-          <CustomerHealthToolbar />
-          <CustomerTable
-            rows={list.rows}
-            selectedRowId={list.params.customerId}
-            emptyKind={list.emptyKind}
-          />
+        <div className="mt-6 flex min-h-0 flex-1 flex-col">
+          <CustomerListShell list={list} />
         </div>
       </main>
       <CustomerDrawerHost />

@@ -7,7 +7,7 @@
 export function CustomerHealthToolbar() {
   return (
     <div
-      className="flex flex-wrap items-center gap-3 rounded-md border border-border bg-muted/60 px-3 py-2"
+      className="flex shrink-0 flex-wrap items-center gap-3 rounded-md border border-border bg-muted/60 px-3 py-2"
       role="search"
       aria-label="Customer list filters"
     >

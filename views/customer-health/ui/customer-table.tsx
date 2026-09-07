@@ -36,7 +36,10 @@ export function CustomerTable({
   emptyKind = null,
 }: CustomerTableProps) {
   return (
-    <section aria-label="Customer list" className="min-w-0">
+    <section
+      aria-label="Customer list"
+      className="flex min-h-0 min-w-0 flex-1 flex-col"
+    >
       <DataTable
         columns={customerTableColumns}
         data={rows}

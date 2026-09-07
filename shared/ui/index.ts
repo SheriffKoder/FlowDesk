@@ -4,3 +4,6 @@
 
 export { DataTable } from "./table";
 export type { DataTableProps, TableColumnDef } from "./table";
+
+export { Pagination, getPaginationRange } from "./pagination";
+export type { PaginationProps, PaginationRange } from "./pagination";

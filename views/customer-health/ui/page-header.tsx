@@ -4,7 +4,7 @@
 
 export function PageHeader() {
   return (
-    <header className="flex flex-col gap-1">
+    <header className="flex shrink-0 flex-col gap-1">
       <h1 className="text-2xl font-semibold tracking-tight text-foreground">
         Customer Health
       </h1>
