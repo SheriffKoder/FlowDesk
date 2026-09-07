@@ -14,8 +14,9 @@ Skim map of `entities/customer` by folder. Import only via the public `index.ts`
 | File | Role |
 | --- | --- |
 | `segment.ts` | Canonical segment enum + labels / `CUSTOMER_SEGMENT_OPTIONS` for filter chips |
+| `field-catalog.ts` | Shared list field catalog (keys, paths, sort/search/filter flags) + default triage keys |
 | `customer.ts` | Domain types: list row, health detail, events, usage points |
-| `customer-list-query.ts` | List use-case input/output + sort field/order constants |
+| `customer-list-query.ts` | List use-case input/output; re-exports sort fields from field catalog |
 
 ## `schema/` — Zod contracts
 
@@ -36,7 +37,7 @@ Skim map of `entities/customer` by folder. Import only via the public `index.ts`
 
 | File | Role |
 | --- | --- |
-| `customers-repository.ts` | Load fixtures; filter, sort, paginate list |
+| `customers-repository.ts` | Load fixtures; filter/sort via field catalog; paginate list |
 | `get-customer-health.ts` | Look up health by id; map not-found / upstream errors |
 
 ## `queries/` — use-cases

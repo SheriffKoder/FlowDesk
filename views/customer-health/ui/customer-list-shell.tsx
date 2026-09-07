@@ -22,7 +22,8 @@ import { Pagination } from "@/shared/ui";
 
 import { useListUrl } from "../hooks/use-list-url";
 import { nextListSort } from "../lib/next-list-sort";
-import { LIST_PAGE_SIZES, type ListPageSize } from "../model/list-url-params";
+import { customerHealthListConfig } from "../model/list-config";
+import type { ListPageSize } from "../model/list-url-params";
 import type { CustomerListPageData } from "../server/load-customer-list";
 import { CustomerHealthToolbar } from "./customer-health-toolbar";
 import { CustomerTable } from "./customer-table";
@@ -64,7 +65,7 @@ export function CustomerListShell({ list }: CustomerListShellProps) {
         page={list.page}
         pageSize={list.pageSize}
         total={list.total}
-        pageSizeOptions={LIST_PAGE_SIZES}
+        pageSizeOptions={customerHealthListConfig.pagination.sizes}
         isPending={isPending}
         aria-label="Customer list pagination"
         onPageChange={(page) => {

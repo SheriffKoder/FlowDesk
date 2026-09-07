@@ -4,33 +4,37 @@
  * Purpose: Input/output types for the list-customers use-case.
  * Used in: queries/list-customers, repository, API route adapter.
  * Used for: Honor URL contract filters + resolved sort without importing views.
+ *
+ * Sort field allow-list lives in {@link ./field-catalog.ts} so views and
+ * entity share one catalog.
  */
 
 import type { CustomerListItem } from "./customer";
 import type { CustomerSegment } from "./segment";
+import type { CustomerListSortField } from "./field-catalog";
 
-export const CUSTOMER_LIST_SORT_FIELDS = [
-  "name",
-  "mrr",
-  "last_active",
-  "health",
-  "owner",
-] as const;
-
-export type CustomerListSortField = (typeof CUSTOMER_LIST_SORT_FIELDS)[number];
+export {
+  CUSTOMER_LIST_SORT_FIELDS,
+  type CustomerListSortField,
+} from "./field-catalog";
 
 export type CustomerListSortOrder = "asc" | "desc";
+
+export type CustomerListSortKey = {
+  field: CustomerListSortField;
+  order: CustomerListSortOrder;
+};
 
 /**
  * Sort plan for the list query.
  * `default` = health risk-first then name A→Z (URL omitted sort).
+ * `explicit` = multi-level keys in priority order (url-kit append dialect).
  */
 export type CustomerListSort =
   | { kind: "default" }
   | {
       kind: "explicit";
-      field: CustomerListSortField;
-      order: CustomerListSortOrder;
+      keys: CustomerListSortKey[];
     };
 
 export type ListCustomersInput = {

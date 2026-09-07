@@ -15,9 +15,9 @@
  * 2. FilterOptionButtons → URL `segment` multi-select (OR filter).
  */
 
-import { CUSTOMER_SEGMENT_OPTIONS } from "@/entities/customer";
 import { FilterOptionButtons, SearchInput } from "@/shared/ui";
 
+import { customerHealthListConfig } from "../model/list-config";
 import type { CustomerSegment } from "../model/list-url-params";
 
 export type CustomerHealthToolbarProps = {
@@ -30,6 +30,8 @@ export type CustomerHealthToolbarProps = {
   /** Multi-select commit from FilterOptionButtons. */
   onSegmentChange: (segment: CustomerSegment[]) => void;
 };
+
+const segmentFilter = customerHealthListConfig.filters[0];
 
 /**
  * List filter toolbar: search + Healthy / Watch / At risk chips.
@@ -48,14 +50,14 @@ export function CustomerHealthToolbar({
     >
       <SearchInput
         label="Search"
-        placeholder="Search by name or domain"
+        placeholder={customerHealthListConfig.search.placeholder}
         value={search}
         onValueCommit={onSearchChange}
         className="min-w-[12rem] flex-1"
       />
       <FilterOptionButtons
-        label="Segment"
-        options={CUSTOMER_SEGMENT_OPTIONS}
+        label={segmentFilter.label}
+        options={segmentFilter.options}
         value={segment}
         selectionMode="multi"
         onChange={(next) => {

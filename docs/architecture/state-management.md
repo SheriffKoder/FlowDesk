@@ -5,7 +5,8 @@
 | Concern | Mechanism |
 |---|---|
 | List filters, pagination, sort | URL `searchParams` (source of truth) |
-| Default list order | Parse/query: absent `sort`/`order` → health (risk-first) then name |
+| Default list order | Parse/query: absent `sort` → health (risk-first) then name |
+| Explicit list sort | Multi-level `sort=field:order,...` (append on new column click) |
 | Table pending UX | `useTransition` around router updates (`scroll: false`) |
 | Search typing | Local input state + debounce → URL; rehydrate from URL on history nav |
 | Drawer open / selected customer | Local state (instant open); **selection = `customerId` only** |

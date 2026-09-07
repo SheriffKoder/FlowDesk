@@ -14,8 +14,7 @@ Root `app/layout.tsx` is enough for now — **no nested `/customers` layout** un
 | `segment` | comma-joined `healthy` / `watch` / `at_risk` (multi-select OR); empty = all | Invalid tokens dropped; empty → no filter |
 | `page` | 1-based page index | Reset to `1` when search/segment/sort/page_size change; **clamp** when total pages shrink |
 | `page_size` | Page size (`10` \| `20` \| `50`; default `20`) | Shared pagination control |
-| `sort` | Column key (`name` \| `mrr` \| `last_active` \| `health` \| `owner`) | From sort system. **Absent** → resolve default health (risk-first) then name in parse/query (URL need not include sort on first land) |
-| `order` | `asc` \| `desc` | Paired with `sort`; absent with sort → follow default sort rules |
+| `sort` | Multi-level `field:order` list (`name` \| `mrr` \| `last_active` \| `health` \| `owner`), e.g. `mrr:desc,name:asc` | Clicking another column **appends** a level (url-kit). **Absent** → health (risk-first) then name in query (URL need not include sort on first land). Legacy `sort=field&order=dir` still parses as one level. |
 | `customerId` | Open drawer target | Mirrored from local drawer state; hydrates open on load; selection derived from this only |
 
 Use `router.push` / `replace` with `{ scroll: false }` for param updates. Wrap list updates in `startTransition`.
@@ -31,7 +30,7 @@ Use `router.push` / `replace` with `{ scroll: false }` for param updates. Wrap l
 ## APIs
 
 ```
-GET /api/customers?search=&segment=&page=&page_size=&sort=&order=
+GET /api/customers?search=&segment=&page=&page_size=&sort=
 GET /api/customers/{id}/health
 ```
 

@@ -8,5 +8,6 @@ How FlowDesk’s Customer Health surface is put together. Read ADRs for *why*; t
 | [state-management.md](./state-management.md) | URL, local drawer state, when not to add global stores |
 | [caching.md](./caching.md) | Server list vs client drawer cache |
 | [routing.md](./routing.md) | App Router, searchParams contract, shallow drawer URL |
+| [list-field-catalog.md](./list-field-catalog.md) | Entity field catalog + view list-config (copyable lists) |
 
 Related: [../adr/](../adr/), [../project-phases.md](../project-phases.md).

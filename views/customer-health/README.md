@@ -2,9 +2,11 @@
 
 Route composition for the Customer Health overview page.
 
-**Owns:** page shell wiring (header, toolbar, table, drawer host), view-local URL contract helpers (`lib/` + `model/list-url-params.ts`), and server list load (`server/load-customer-list.ts`).
+**Owns:** page shell wiring (header, toolbar, table, drawer host), view-local URL contract helpers (`lib/` + `model/list-config.ts` / `list-url-params.ts`), and server list load (`server/load-customer-list.ts`).
 
-**Does not own:** customer domain schemas, API handlers, or shared UI primitives (migrate header/table/panel into `shared/ui` as those tickets land).
+**Does not own:** customer domain schemas / field catalog, API handlers, or shared UI primitives.
+
+Copyable list pattern: [docs/architecture/list-field-catalog.md](../../docs/architecture/list-field-catalog.md).
 
 ## Composition
 

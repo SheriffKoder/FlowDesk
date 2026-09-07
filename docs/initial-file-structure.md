@@ -72,7 +72,7 @@ views/
     ├── README.md
     ├── ui/                        # PageHeader, toolbar, CustomerTable, drawer host
     ├── hooks/
-    ├── model/                     # list row, columns, table props, list-url-params
+    ├── model/                     # list-config, list-url-params, columns, table props
     └── lib/                       # parse/serialize list URL, page reset/clamp, resolve sort
 
 features/
@@ -83,13 +83,14 @@ features/
 
 entities/
 └── customer/
-    ├── model/
+    ├── model/                     # field-catalog, segment, list query, domain types
     ├── schema/
     ├── transform/
-    ├── repository/
+    ├── repository/                # filter/sort via field catalog
     ├── queries/
     ├── client/                    # health fetcher + tiny cache
     ├── errors/
+    ├── docs/responsibilities.md
     └── README.md
 
 widgets/                           # only if a composed block is reused

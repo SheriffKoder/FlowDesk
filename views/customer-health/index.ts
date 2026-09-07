@@ -54,3 +54,10 @@ export {
   type PageResetField,
   type ResolvedListSort,
 } from "./model/list-url-params";
+
+export {
+  customerHealthListConfig,
+  type CustomerHealthCellFormat,
+  type CustomerHealthColumnConfig,
+  type CustomerHealthListConfig,
+} from "./model/list-config";

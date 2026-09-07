@@ -1,9 +1,15 @@
 /**
  * @file Column definitions + empty copy for the Customer Health list table.
  *
+ * Columns are built from {@link customerHealthListConfig} + entity field catalog.
  * Sortable headers compose shared `SortButton`; multi-level URL sorts stay in the shell.
  */
 
+import {
+  CUSTOMER_LIST_FIELDS,
+  customerSegmentLabel,
+  type CustomerListItem,
+} from "@/entities/customer";
 import { SortButton, type TableColumnDef } from "@/shared/ui";
 
 import {
@@ -12,24 +18,22 @@ import {
   listSortLevelForColumn,
 } from "../lib/next-list-sort";
 import type { CustomerListRow } from "./customer-list-row";
+import {
+  customerHealthListConfig,
+  type CustomerHealthCellFormat,
+  type CustomerHealthColumnConfig,
+} from "./list-config";
 import type { ListSortKey, ListSortSpec } from "./list-url-params";
 
 /////////////////////////////////////////////////////////////
 // Display formatters (view-local — keep DataTable dumb)
 /////////////////////////////////////////////////////////////
 
-/** Segment enum → short label shown in the Segment column. */
-const segmentLabels = {
-  healthy: "Healthy",
-  watch: "Watch",
-  at_risk: "At risk",
-} as const;
-
 /**
  * Format MRR as whole USD (e.g. `$12,500`).
  * Non-finite values render as an em dash so the cell never shows `NaN`.
  */
-function formatMrr(value: number): string {
+function formatCurrencyUsd(value: number): string {
   if (!Number.isFinite(value)) {
     return "—";
   }
@@ -41,10 +45,10 @@ function formatMrr(value: number): string {
 }
 
 /**
- * Format last-active ISO timestamp as a short US date (e.g. `Mar 4, 2026`).
+ * Format ISO timestamp as a short US date (e.g. `Mar 4, 2026`).
  * Empty or unparseable strings fall back to an em dash.
  */
-function formatLastActive(iso: string): string {
+function formatShortDate(iso: string): string {
   if (!iso) {
     return "—";
   }
@@ -59,43 +63,53 @@ function formatLastActive(iso: string): string {
   }).format(date);
 }
 
-/** Trim owner; blank → em dash so empty CS ownership stays readable. */
-function formatOwner(owner: string): string {
-  const trimmed = owner.trim();
+/** Trim string; blank → em dash. */
+function formatText(value: string): string {
+  const trimmed = value.trim();
   return trimmed.length > 0 ? trimmed : "—";
 }
 
-/** Trim name; blank → em dash (defensive — fixtures always have names). */
-function formatName(name: string): string {
-  const trimmed = name.trim();
-  return trimmed.length > 0 ? trimmed : "—";
+/**
+ * Resolve a cell string from format id + row path (from catalog).
+ */
+function formatCell(
+  format: CustomerHealthCellFormat,
+  row: CustomerListItem,
+  path: keyof CustomerListItem,
+): string {
+  const raw = row[path];
+
+  switch (format) {
+    case "text":
+      return formatText(String(raw ?? ""));
+    case "currencyUsd":
+      return formatCurrencyUsd(typeof raw === "number" ? raw : Number(raw));
+    case "shortDate":
+      return formatShortDate(String(raw ?? ""));
+    case "number":
+      return String(raw);
+    case "segmentLabel":
+      return customerSegmentLabel(row.segment);
+    default: {
+      const _exhaustive: never = format;
+      return _exhaustive;
+    }
+  }
 }
 
 /////////////////////////////////////////////////////////////
 // Sortable header chrome
 /////////////////////////////////////////////////////////////
 
-/** Table column id → URL `sort` key (`lastActive` → `last_active`). */
-const COLUMN_SORT_KEYS = {
-  name: "name",
-  mrr: "mrr",
-  lastActive: "last_active",
-  health: "health",
-  owner: "owner",
-} as const satisfies Record<string, ListSortKey>;
-
-type SortableColumnId = keyof typeof COLUMN_SORT_KEYS;
-
 function sortableHeader(options: {
   label: string;
-  columnId: SortableColumnId;
+  sortKey: ListSortKey;
   sorts: readonly ListSortSpec[];
   onSortToggle: (key: ListSortKey) => void;
   isPending?: boolean;
 }) {
-  const sortKey = COLUMN_SORT_KEYS[options.columnId];
-  const direction = listSortDirectionForColumn(options.sorts, sortKey);
-  const priority = listSortLevelForColumn(options.sorts, sortKey);
+  const direction = listSortDirectionForColumn(options.sorts, options.sortKey);
+  const priority = listSortLevelForColumn(options.sorts, options.sortKey);
 
   return (
     <div className="flex items-center justify-between gap-1">
@@ -106,7 +120,7 @@ function sortableHeader(options: {
         priority={priority}
         disabled={options.isPending}
         onToggle={() => {
-          options.onSortToggle(sortKey);
+          options.onSortToggle(options.sortKey);
         }}
       />
     </div>
@@ -114,7 +128,7 @@ function sortableHeader(options: {
 }
 
 /////////////////////////////////////////////////////////////
-// Columns
+// Columns — driven by list-config
 /////////////////////////////////////////////////////////////
 
 export type BuildCustomerTableColumnsOptions = {
@@ -123,86 +137,50 @@ export type BuildCustomerTableColumnsOptions = {
   isPending?: boolean;
 };
 
+function buildColumn(
+  column: CustomerHealthColumnConfig,
+  options: BuildCustomerTableColumnsOptions,
+): TableColumnDef<CustomerListRow> {
+  const field = CUSTOMER_LIST_FIELDS[column.fieldId];
+  const label = field.label;
+  const sortKey = field.key as ListSortKey;
+  const sortable =
+    field.sortable &&
+    (customerHealthListConfig.sort.allowed as readonly string[]).includes(
+      field.key,
+    );
+
+  return {
+    id: column.columnId,
+    header: sortable
+      ? sortableHeader({
+          label,
+          sortKey,
+          sorts: options.sorts,
+          onSortToggle: options.onSortToggle,
+          isPending: options.isPending,
+        })
+      : label,
+    ariaSort: sortable
+      ? listSortAriaForColumn(options.sorts, sortKey)
+      : undefined,
+    cell: (row) => formatCell(column.format, row, field.path),
+    className: column.className,
+  };
+}
+
 /**
- * Build list columns with sortable headers wired to the current URL sorts.
- * Segment stays non-sortable (not in the URL `LIST_SORT_KEYS` allow-list).
+ * Build list columns from {@link customerHealthListConfig.columns}.
+ * Non-sortable catalog fields (e.g. segment) render a plain header.
  */
 export function buildCustomerTableColumns({
   sorts,
   onSortToggle,
   isPending = false,
 }: BuildCustomerTableColumnsOptions): TableColumnDef<CustomerListRow>[] {
-  return [
-    {
-      id: "name",
-      header: sortableHeader({
-        label: "Name",
-        columnId: "name",
-        sorts,
-        onSortToggle,
-        isPending,
-      }),
-      ariaSort: listSortAriaForColumn(sorts, "name"),
-      cell: (row) => formatName(row.name),
-      className: "max-w-[14rem] truncate",
-    },
-    {
-      id: "mrr",
-      header: sortableHeader({
-        label: "MRR",
-        columnId: "mrr",
-        sorts,
-        onSortToggle,
-        isPending,
-      }),
-      ariaSort: listSortAriaForColumn(sorts, "mrr"),
-      cell: (row) => formatMrr(row.mrr),
-      className: "tabular-nums",
-    },
-    {
-      id: "lastActive",
-      header: sortableHeader({
-        label: "Last active",
-        columnId: "lastActive",
-        sorts,
-        onSortToggle,
-        isPending,
-      }),
-      ariaSort: listSortAriaForColumn(sorts, "last_active"),
-      cell: (row) => formatLastActive(row.lastActive),
-      className: "text-muted-foreground",
-    },
-    {
-      id: "health",
-      header: sortableHeader({
-        label: "Health",
-        columnId: "health",
-        sorts,
-        onSortToggle,
-        isPending,
-      }),
-      ariaSort: listSortAriaForColumn(sorts, "health"),
-      cell: (row) => String(row.health),
-      className: "font-medium tabular-nums",
-    },
-    {
-      id: "owner",
-      header: sortableHeader({
-        label: "Owner",
-        columnId: "owner",
-        sorts,
-        onSortToggle,
-        isPending,
-      }),
-      ariaSort: listSortAriaForColumn(sorts, "owner"),
-      cell: (row) => formatOwner(row.owner),
-    },
-    {
-      id: "segment",
-      header: "Segment",
-      cell: (row) => segmentLabels[row.segment],
-    },
-  ];
+  return customerHealthListConfig.columns.map((column) =>
+    buildColumn(column, { sorts, onSortToggle, isPending }),
+  );
 }
 
 /////////////////////////////////////////////////////////////

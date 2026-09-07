@@ -20,12 +20,29 @@ export type {
   CustomerListResult,
   CustomerListSort,
   CustomerListSortField,
+  CustomerListSortKey,
   CustomerListSortOrder,
   ListCustomersInput,
 } from "./model/customer-list-query";
 export {
   CUSTOMER_LIST_SORT_FIELDS,
 } from "./model/customer-list-query";
+export {
+  CUSTOMER_LIST_FIELDS,
+  CUSTOMER_LIST_SEGMENT_FILTER_OPTIONS,
+  CUSTOMER_SEARCH_FIELD_IDS,
+  DEFAULT_CUSTOMER_LIST_SORT_KEYS,
+  customerListMatchesSearch,
+  customerListSortValue,
+  customerSegmentLabel,
+  getCustomerListField,
+  getCustomerListFieldByKey,
+  type CustomerListField,
+  type CustomerListFieldDef,
+  type CustomerListFieldId,
+  type CustomerListFieldType,
+  type CustomerSearchFieldId,
+} from "./model/field-catalog";
 export {
   CUSTOMER_SEGMENTS,
   CUSTOMER_SEGMENT_LABELS,
