@@ -72,7 +72,8 @@ views/
     ├── README.md
     ├── ui/                        # PageHeader, toolbar, CustomerTable, drawer host
     ├── hooks/
-    └── model/                     # list row placeholder, column defs, table props
+    ├── model/                     # list row, columns, table props, list-url-params
+    └── lib/                       # parse/serialize list URL, page reset/clamp, resolve sort
 
 features/
 └── customer-drawer/               # optional: drawer workflow when extracted
@@ -120,7 +121,7 @@ Only `index.ts` is public per slice. No deep imports across features/entities.
 
 | Path | Contains |
 |---|---|
-| `tests/unit/` | Pure rules: URL contract, schemas/transforms, drawer hook (mocked router), health cache |
+| `tests/unit/` | Pure rules: URL contract (**landed**), schemas/transforms, drawer hook (mocked router), health cache |
 | `tests/integration/` | Boundary tests: list API, health API, searchParams → list props wiring |
 | `tests/fixtures/` | Shared customer/health fixtures reused by API + tests |
 

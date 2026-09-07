@@ -143,4 +143,4 @@ High-level stages (see `plan-clean.md` for the locked checklist):
 | 3 Plan and review | Done (ADRs + plan-clean) |
 | 4 Initial documentation | Done (`docs/`) |
 | 5 File structure scaffold | Done |
-| 6 Implementation | In progress (Foundation: route chrome + shared DataTable) |
+| 6 Implementation | In progress (Foundation: URL contract helpers + Vitest) |

@@ -13,8 +13,8 @@ Root `app/layout.tsx` is enough for now — **no nested `/customers` layout** un
 | `search` | Name/domain search | Debounced from the search input; rehydrate local input from URL on back/forward |
 | `segment` | `healthy` \| `watch` \| `at_risk` (final enum in schema) | Segment filter; invalid → default/fallback |
 | `page` | 1-based page index | Reset to `1` when search/segment/sort/page_size change; **clamp** when total pages shrink |
-| `page_size` | Page size | Shared pagination control |
-| `sort` | Column key | From sort system. **Absent** → resolve default health (risk-first) then name in parse/query (URL need not include sort on first land) |
+| `page_size` | Page size (`10` \| `20` \| `50`; default `20`) | Shared pagination control |
+| `sort` | Column key (`name` \| `mrr` \| `last_active` \| `health` \| `owner`) | From sort system. **Absent** → resolve default health (risk-first) then name in parse/query (URL need not include sort on first land) |
 | `order` | `asc` \| `desc` | Paired with `sort`; absent with sort → follow default sort rules |
 | `customerId` | Open drawer target | Mirrored from local drawer state; hydrates open on load; selection derived from this only |
 

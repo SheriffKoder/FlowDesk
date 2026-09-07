@@ -2,7 +2,7 @@
 
 Strategy for Customer Health: **unit-test rules**, **integration-test boundaries**, defer broad E2E.
 
-Tests live at the **repo root** under `tests/`.
+Tests live at the **repo root** under `tests/`. Runner: **Vitest** (`npm test` / `npm run test:watch`).
 
 ```
 tests/
@@ -13,12 +13,12 @@ tests/
 
 ## Unit (weave into implementation steps)
 
-| Area | Examples |
-|---|---|
-| URL contract | parse/serialize, defaults, reset `page` → 1 |
-| Schemas / transforms | list + health Zod; raw → domain |
-| Drawer hook | open/close, URL mirror, hydrate from `customerId` (mocked router) |
-| Health client cache | set / get / hit after prefetch |
+| Area | Examples | Status |
+|---|---|---|
+| URL contract | parse/serialize, defaults, reset `page` → 1, clamp | Landed (`list-url-params.test.ts`) |
+| Schemas / transforms | list + health Zod; raw → domain | Expected |
+| Drawer hook | open/close, URL mirror, hydrate from `customerId` (mocked router) | Expected |
+| Health client cache | set / get / hit after prefetch | Expected |
 
 Skip heavy tests on pure presentational chrome unless it encodes real rules.
 

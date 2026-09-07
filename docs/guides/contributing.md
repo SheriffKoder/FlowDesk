@@ -36,6 +36,7 @@ One sentence why.
 ## Testing
 
 - Place tests under root `tests/` (`unit/`, `integration/`, `fixtures/`) — see [testing.md](./testing.md).
+- Run `npm test` (Vitest); use `npm run test:watch` while iterating.
 - Add **Testing:** notes alongside **UX** when landing a step that introduces rules or API boundaries.
 
 ## Pull requests
