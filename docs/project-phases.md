@@ -142,5 +142,5 @@ High-level stages (see `plan-clean.md` for the locked checklist):
 | 2 Design settle | Done (theme doc + globals tuned) |
 | 3 Plan and review | Done (ADRs + plan-clean) |
 | 4 Initial documentation | Done (`docs/`) |
-| 5 File structure scaffold | Next |
-| 6 Implementation | Pending |
+| 5 File structure scaffold | Done |
+| 6 Implementation | In progress (Foundation: route chrome + shared DataTable) |

@@ -1,19 +1,21 @@
 # Initial file structure
 
-Target layout for FlowDesk after scaffold. Prefer **wide, not deep**. Only create folders a unit needs.
+Layout for FlowDesk after scaffold. Prefer **wide, not deep**. Only create folders a unit needs.
 
-> **Note:** The repo may keep Next.js `app/` at the project root during migration. New domain code should follow this tree (`src/` recommended). Thin route files re-export or render view composition only.
+> **Current layout:** domain code lives at the **project root** next to `app/` (`views/`, `entities/`, `features/`, `shared/`, `widgets/`). A later move under `src/` is optional; thin route files still re-export or render view composition only.
+>
+> Tailwind `content` in `tailwind.config.ts` must include those domain folders so utility classes are emitted.
 
 ## Top-level
 
 ```
-├── src/                    # (or project root — see note above)
-│   ├── app/                # Routing entrypoints only — no business logic
-│   ├── views/              # Route/page composition
-│   ├── features/           # Reusable workflows (multi-view)
-│   ├── entities/           # Domain concepts
-│   ├── widgets/            # Composed reusable UI sections
-│   └── shared/             # Cross-domain, no business logic
+├── app/                    # Routing entrypoints only — no business logic
+├── views/                  # Route/page composition
+├── features/               # Reusable workflows (multi-view)
+├── entities/               # Domain concepts
+├── widgets/                # Composed reusable UI sections
+├── shared/                 # Cross-domain, no business logic
+├── components/             # Existing shadcn primitives (migrate into shared/ui over time)
 ├── tests/                  # Root test suite (unit + integration + fixtures)
 │   ├── unit/
 │   ├── integration/
@@ -51,65 +53,64 @@ Use these names only — never invent synonyms (`helpers/` → `lib/`, `actions/
 
 **Split by layer by default.** Subarea folders only if that subtree has zero shared dependents.
 
-## Customer Health — expected units (scaffold target)
+## Customer Health — units (scaffolded)
 
 ```
-src/
-├── app/
-│   ├── customers/health/          # or customer-health — thin re-exports
-│   │   ├── page.tsx
-│   │   ├── loading.tsx
-│   │   ├── error.tsx
-│   │   └── not-found.tsx
-│   └── api/
-│       └── customers/
-│           ├── route.ts           # GET list
-│           └── [id]/health/route.ts
-│
-├── views/
-│   └── customer-health/
-│       ├── README.md
-│       ├── ui/                    # view-only composition pieces if needed
-│       ├── hooks/                 # e.g. URL param helpers used only here
-│       └── model/                 # view-local types if any
-│
-├── features/
-│   └── customer-drawer/           # optional: drawer workflow if it grows
-│       ├── ui/
-│       ├── hooks/                 # useCustomerDrawer
-│       └── model/
-│
-├── entities/
-│   └── customer/
-│       ├── model/
-│       ├── schema/
-│       ├── transform/
-│       ├── repository/
-│       ├── queries/
-│       ├── client/                # health fetcher + tiny cache
-│       ├── errors/
-│       └── README.md
-│
-├── widgets/                       # only if a composed block is reused
-│
-└── shared/
-    ├── ui/                        # page-header, table, pagination, search, filter, panel, sort
-    ├── lib/                       # debounce, cn, url helpers
+app/
+├── customers/health/              # thin entry → views/customer-health
+│   ├── page.tsx
+│   ├── loading.tsx
+│   ├── error.tsx
+│   └── not-found.tsx
+└── api/
+    └── customers/
+        ├── route.ts               # GET list (placeholder → implement later)
+        └── [id]/health/route.ts
+
+views/
+└── customer-health/
+    ├── README.md
+    ├── ui/                        # PageHeader, toolbar, CustomerTable, drawer host
     ├── hooks/
-    └── ...
+    └── model/                     # list row placeholder, column defs, table props
+
+features/
+└── customer-drawer/               # optional: drawer workflow when extracted
+    ├── ui/
+    ├── hooks/                     # useCustomerDrawer
+    └── model/
+
+entities/
+└── customer/
+    ├── model/
+    ├── schema/
+    ├── transform/
+    ├── repository/
+    ├── queries/
+    ├── client/                    # health fetcher + tiny cache
+    ├── errors/
+    └── README.md
+
+widgets/                           # only if a composed block is reused
+
+shared/
+├── ui/
+│   └── table/                     # DataTable (landed)
+├── lib/                           # debounce, cn, url helpers
+└── hooks/
 ```
 
-## Shared UI expected for this feature
+## Shared UI for this feature
 
-| Component | Role |
-|---|---|
-| `page-header` | Title + supporting paragraph |
-| Configurable `table` | Header + rows from column config |
-| `pagination-*` | Footer, page size, navigation |
-| Search input | Param label, placeholder, debounce |
-| Filter control | Button + dropdown; column/label/options |
-| Sort control | Header-cell island; URL sort/order |
-| Panel / drawer shell | Children slot; a11y focus trap |
+| Component | Role | Status |
+|---|---|---|
+| Configurable `DataTable` | Header + rows from column config; `onRowClick` / selection / pending | Landed |
+| `page-header` | Title + supporting paragraph | View-local for now; move to shared later |
+| `pagination-*` | Footer, page size, navigation | Expected |
+| Search input | Param label, placeholder, debounce | Expected |
+| Filter control | Button + dropdown; column/label/options | Expected |
+| Sort control | Header-cell island; URL sort/order | Expected |
+| Panel / drawer shell | Children slot; a11y focus trap | Expected |
 
 ## Public API rule
 

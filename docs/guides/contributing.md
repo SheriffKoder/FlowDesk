@@ -13,6 +13,7 @@
 - Dependency direction: `views → features → entities → shared`.
 - Public exports via `index.ts` only — no deep imports across slices.
 - Route files in `app/` stay thin; composition lives in `views/`.
+- Domain folders (`views/`, `features/`, `entities/`, `shared/`, `widgets/`) must stay in `tailwind.config.ts` `content` so classes are scanned.
 
 ## Documentation style
 

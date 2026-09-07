@@ -56,4 +56,4 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000](http://localhost:3000). Customer Health: [http://localhost:3000/customers/health](http://localhost:3000/customers/health).

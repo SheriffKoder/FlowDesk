@@ -4,7 +4,7 @@ Application-wide documentation for FlowDesk (Customer Health overview and relate
 
 | Section | Purpose |
 |---|---|
-| [initial-file-structure.md](./initial-file-structure.md) | Target folder layout and layer rules |
+| [initial-file-structure.md](./initial-file-structure.md) | Current folder layout and layer rules |
 | [project-phases.md](./project-phases.md) | Phase labels, steps, and UX ideas |
 | [architecture/](./architecture/) | How rendering, state, cache, and routing fit together |
 | [adr/](./adr/) | Architecture Decision Records (locked choices) |

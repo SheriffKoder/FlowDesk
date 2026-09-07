@@ -2,7 +2,7 @@
 
 ## Route
 
-Customer Health lives as an App Router page under the views/composition pattern (thin `app/` entry → `views/...` composition). Exact path is chosen during scaffold (e.g. `/customers/health` or `/customer-health`).
+Customer Health lives at **`/customers/health`** under the views/composition pattern (thin `app/customers/health/` entry → `views/customer-health` composition).
 
 Root `app/layout.tsx` is enough for now — **no nested `/customers` layout** until shared chrome is needed.
 

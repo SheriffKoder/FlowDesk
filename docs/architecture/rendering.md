@@ -10,11 +10,13 @@
 
 ```
 page.tsx (Server)
-  ├─ PageHeader              ← server OK
+  ├─ PageHeader              ← server OK (view-local until shared page-header)
   ├─ CustomerHealthToolbar   ← client (URL + useTransition)
-  ├─ CustomerTable           ← receives server-fetched rows; small client islands inside
+  ├─ CustomerTable           ← view wiring (columns in model/) → shared DataTable
   └─ CustomerDrawerHost      ← client (open state + health fetch)
 ```
+
+List presentation is the dumb shared `DataTable` (`shared/ui/table`): `columns`, `data`, `getRowId`, optional `onRowClick` / `selectedRowId` / `isPending`. Domain column config stays in the view.
 
 ## Loading model
 
