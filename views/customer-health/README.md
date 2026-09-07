@@ -14,15 +14,16 @@ page.tsx (Server)
        └─ CustomerHealthPage
             ├─ PageHeader                 ← server (view-local for now)
             ├─ CustomerListShell          ← client island
-            │                     ├─ CustomerHealthToolbar ← SearchInput + segment FilterOptionButtons
-            │    ├─ CustomerTable         ← view wiring → shared DataTable
+            │    ├─ CustomerHealthToolbar ← SearchInput + segment FilterOptionButtons
+            │    ├─ CustomerTable         ← SortButton headers → shared DataTable
             │    └─ Pagination            ← page / page_size
             └─ CustomerDrawerHost         ← client island (viewport-edge slot)
 ```
 
-`CustomerTable` owns column config and list props; `shared/ui` `DataTable` stays dumb (columns, data, onRowClick, selection).
+`CustomerTable` owns column config and list props; `shared/ui` `DataTable` stays dumb (columns, data, onRowClick, selection, `aria-sort`).
 
-Search uses shared `SearchInput` (debounce + rehydrate from URL). Segment uses shared `FilterOptionButtons` (multi-select chips → comma-joined `segment`). `applyListParamsPatch` resets `page` → 1; filtered empty copy when nothing matches.
+Search uses shared `SearchInput` (debounce + rehydrate from URL). Segment uses shared `FilterOptionButtons` (multi-select chips → comma-joined `segment`). Sortable headers use shared `SortButton` (none → asc → desc → remove; **append** levels → `sort=mrr:desc,name:asc`). `applyListParamsPatch` resets `page` → 1; filtered empty copy when nothing matches. Absent sort params keep triage order (health-then-name) without lighting header arrows.
+
 ## Server list (Step 5)
 
 [`server/load-customer-list.ts`](./server/load-customer-list.ts) maps `searchParams` → entity `listCustomers` → table props. Fixtures stay behind the entity repository (no view import of seed data; no self-HTTP).
@@ -39,6 +40,7 @@ Pure helpers under [`lib/`](./lib/README.md):
 | `serializeListParams` | typed state → query string (omits defaults / absent sort) |
 | `resolveListSort` | absent sort → health (risk-first) then name |
 | `toEntityListSort` | view sort → entity query sort |
+| `nextListSort` | header toggle / append → next `sorts[]` |
 | `applyListParamsPatch` | reset `page` → 1 when search/segment/sort/size change |
 | `clampPage` | clamp page when totals shrink |
 

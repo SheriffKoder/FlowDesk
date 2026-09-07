@@ -16,6 +16,7 @@
 | `to-entity-list-sort.ts` | View resolved sort → entity `listCustomers` sort |
 | `reset-page.ts` | Patch merge + reset `page` → 1 on filter/sort/size change |
 | `clamp-page.ts` | Clamp `page` when totals shrink |
+| `next-list-sort.ts` | Header toggle / append levels + aria / priority helpers |
 | `index.ts` | Public barrel for this folder |
 
 Param names, enums, and defaults live in `../model/list-url-params.ts`.

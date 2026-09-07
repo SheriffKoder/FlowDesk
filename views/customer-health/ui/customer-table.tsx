@@ -2,46 +2,49 @@
 
 /**
  * @file Customer list table wiring — presentation via shared DataTable.
+ * Sortable headers use shared SortButton; multi-level URL sorts stay in the shell.
  */
 
 import { DataTable } from "@/shared/ui";
 
 import {
-  customerTableColumns,
+  buildCustomerTableColumns,
   customerTableFilteredEmptyMessage,
   customerTableTrueEmptyMessage,
 } from "../model/customer-table-columns";
 import type { CustomerTableProps } from "../model/customer-table-props";
 
-
-// Helper function to resolve the empty message based on the empty kind.
 function resolveEmptyMessage(
   emptyKind: CustomerTableProps["emptyKind"],
 ): string {
-
-  // If the empty kind is filtered, return the filtered empty message.
   if (emptyKind === "filtered") {
     return customerTableFilteredEmptyMessage;
   }
-  // Otherwise, return the true empty message.
   return customerTableTrueEmptyMessage;
 }
 
-// Customer table component.
 export function CustomerTable({
   rows,
   selectedRowId = null,
   onRowClick,
   isPending,
   emptyKind = null,
+  sorts = [],
+  onSortToggle,
 }: CustomerTableProps) {
+  const columns = buildCustomerTableColumns({
+    sorts,
+    isPending,
+    onSortToggle: onSortToggle ?? (() => {}),
+  });
+
   return (
     <section
       aria-label="Customer list"
       className="flex min-h-0 min-w-0 flex-1 flex-col"
     >
       <DataTable
-        columns={customerTableColumns}
+        columns={columns}
         data={rows}
         getRowId={(row) => row.id}
         selectedRowId={selectedRowId}

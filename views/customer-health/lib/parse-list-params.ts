@@ -8,17 +8,17 @@
  *
  * Function Index:
  * - firstValue / allValues — read query keys from URLSearchParams or a record
- * - parseSegments / parsePage / parsePageSize / parseSort / parseOrder / parseCustomerId
+ * - parseSegments / parsePage / parsePageSize / parseSorts / parseCustomerId
  * - parseListParams(raw) → CustomerHealthUrlParams
  *
  * @example
- * parseListParams(new URLSearchParams("segment=at_risk,watch&page=2"))
- * // → { search: "", segment: ["watch", "at_risk"], page: 2, ... } (canonical order)
+ * parseListParams(new URLSearchParams("segment=at_risk,watch&sort=mrr:desc,name:asc"))
+ * // → { segment: ["watch", "at_risk"], sorts: [{ field: "mrr", order: "desc" }, ...] }
  *
  * Steps:
  * 1. Read each known key (segment collects all tokens / comma lists).
  * 2. Coerce each field with a dedicated parser (invalid → default / empty).
- * 3. Drop orphan `order` when sort is missing; assemble CustomerHealthUrlParams.
+ * 3. Assemble CustomerHealthUrlParams (multi-level `sort` dialect).
  */
 
 import {
@@ -26,14 +26,15 @@ import {
   DEFAULT_LIST_PAGE,
   LIST_PAGE_SIZES,
   LIST_SORT_KEYS,
-  LIST_SORT_ORDERS,
   LIST_URL_PARAM_KEYS,
   canonicalizeSegments,
+  canonicalizeSorts,
   type CustomerHealthUrlParams,
   type CustomerSegment,
   type ListPageSize,
   type ListSortKey,
   type ListSortOrder,
+  type ListSortSpec,
 } from "../model/list-url-params";
 
 /////////////////////////////////////////////////////////////
@@ -138,27 +139,53 @@ function parsePageSize(value: string | undefined): ListPageSize {
 }
 
 /**
- * Parse sort column key; unknown / empty → null (use resolveListSort later).
+ * Parse multi-level `sort=field:order,field:order`.
+ * Also accepts legacy `sort=field` + `order=asc|desc` for one-level links.
+ * Unknown keys / empty → [].
  */
-function parseSort(value: string | undefined): ListSortKey | null {
-  if (value === undefined || value === "") {
-    return null;
+function parseSorts(raw: RawSearchParams): ListSortSpec[] {
+  const sortValue = firstValue(raw, LIST_URL_PARAM_KEYS.sort);
+  if (sortValue === undefined || sortValue.trim() === "") {
+    return [];
   }
-  return (LIST_SORT_KEYS as readonly string[]).includes(value)
-    ? (value as ListSortKey)
-    : null;
-}
 
-/**
- * Parse sort direction; unknown / empty → null.
- */
-function parseOrder(value: string | undefined): ListSortOrder | null {
-  if (value === undefined || value === "") {
-    return null;
+  const trimmed = sortValue.trim();
+
+  //////////////////////////////////
+  // Legacy single-column: `sort=mrr` (+ optional `order`) without `:`.
+  if (!trimmed.includes(":") && !trimmed.includes(",")) {
+    if (!(LIST_SORT_KEYS as readonly string[]).includes(trimmed)) {
+      return [];
+    }
+    const legacyOrder = firstValue(raw, "order");
+    const order: ListSortOrder =
+      legacyOrder === "desc" ? "desc" : "asc";
+    return canonicalizeSorts([
+      { field: trimmed as ListSortKey, order },
+    ]);
   }
-  return (LIST_SORT_ORDERS as readonly string[]).includes(value)
-    ? (value as ListSortOrder)
-    : null;
+  //////////////////////////////////
+
+  //////////////////////////////////
+  // url-kit dialect: `mrr:desc,name:asc`
+  const specs: ListSortSpec[] = trimmed.split(",").flatMap((token) => {
+    const part = token.trim();
+    if (part.length === 0) {
+      return [];
+    }
+    const [rawField, rawOrder] = part.split(":");
+    const field = (rawField ?? "").trim();
+    const orderToken = (rawOrder ?? "asc").trim();
+    if (!(LIST_SORT_KEYS as readonly string[]).includes(field)) {
+      return [];
+    }
+    const order: ListSortOrder =
+      orderToken === "desc" ? "desc" : "asc";
+    return [{ field: field as ListSortKey, order }];
+  });
+
+  return canonicalizeSorts(specs);
+  //////////////////////////////////
 }
 
 /**
@@ -179,35 +206,21 @@ function parseCustomerId(value: string | undefined): string | null {
 /**
  * Coerce raw URL / route `searchParams` into safe Customer Health list state.
  *
- * Invalid values fall back to defaults. Absent or invalid `sort` stays null so
+ * Invalid values fall back to defaults. Absent or invalid `sort` stays empty so
  * serialize omits it and `resolveListSort` applies health-then-name for queries.
  *
  * @param raw - Next.js searchParams object or URLSearchParams
  * @returns Typed list + drawer URL state (never throws)
  */
 export function parseListParams(raw: RawSearchParams): CustomerHealthUrlParams {
-  //////////////////////////////////
-  // 1. Read sort/order first so we can drop orphan order without a valid sort.
-  const sort = parseSort(firstValue(raw, LIST_URL_PARAM_KEYS.sort));
-  let order = parseOrder(firstValue(raw, LIST_URL_PARAM_KEYS.order));
-
-  if (sort === null) {
-    order = null;
-  }
-  //////////////////////////////////
-
-  //////////////////////////////////
-  // 2. Coerce remaining fields independently; each parser owns its fallback.
   return {
     search: (firstValue(raw, LIST_URL_PARAM_KEYS.search) ?? "").trim(),
     segment: parseSegments(raw),
     page: parsePage(firstValue(raw, LIST_URL_PARAM_KEYS.page)),
     pageSize: parsePageSize(firstValue(raw, LIST_URL_PARAM_KEYS.pageSize)),
-    sort,
-    order,
+    sorts: parseSorts(raw),
     customerId: parseCustomerId(
       firstValue(raw, LIST_URL_PARAM_KEYS.customerId),
     ),
   };
-  //////////////////////////////////
 }

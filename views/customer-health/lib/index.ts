@@ -7,13 +7,15 @@
  *
  * Function Index:
  * - re-exports: clampPage, parseListParams, applyListParamsPatch,
- *   serializeListParams, serializeListParamsToString, resolveListSort
+ *   serializeListParams, serializeListParamsToString, resolveListSort,
+ *   nextListSort, listSortDirectionForColumn, listSortLevelForColumn,
+ *   listSortAriaForColumn
  * - types: RawSearchParams, ListParamsPatch, SerializeListParamsOptions
  *
  * Steps:
  * 1. Re-export parse / serialize helpers.
  * 2. Re-export page reset + clamp helpers.
- * 3. Re-export sort resolution.
+ * 3. Re-export sort resolution + header toggle cycle (append levels).
  */
 
 export { clampPage } from "./clamp-page";
@@ -26,3 +28,9 @@ export {
 } from "./serialize-list-params";
 export { resolveListSort } from "./resolve-list-sort";
 export { toEntityListSort } from "./to-entity-list-sort";
+export {
+  listSortAriaForColumn,
+  listSortDirectionForColumn,
+  listSortLevelForColumn,
+  nextListSort,
+} from "./next-list-sort";

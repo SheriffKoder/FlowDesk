@@ -11,7 +11,7 @@
  * - applyListParamsPatch(current, patch) → next CustomerHealthUrlParams
  *
  * Steps:
- * 1. Shallow-merge current params with the patch (canonicalize segments).
+ * 1. Shallow-merge current params with the patch (canonicalize segments/sorts).
  * 2. Detect whether any PAGE_RESET_FIELDS value changed.
  * 3. If so, force page back to 1; otherwise keep the requested page.
  */
@@ -20,7 +20,9 @@ import {
   DEFAULT_LIST_PAGE,
   PAGE_RESET_FIELDS,
   canonicalizeSegments,
+  canonicalizeSorts,
   segmentsEqual,
+  sortsEqual,
   type CustomerHealthUrlParams,
   type PageResetField,
 } from "../model/list-url-params";
@@ -46,13 +48,16 @@ function fieldChanged(
   if (field === "segment") {
     return !segmentsEqual(current.segment, next.segment);
   }
+  if (field === "sorts") {
+    return !sortsEqual(current.sorts, next.sorts);
+  }
   return current[field] !== next[field];
 }
 
 /**
  * Merge a patch into current list params, resetting `page` when filters change.
  *
- * Changing search, segment, sort, order, or pageSize forces `page` to 1.
+ * Changing search, segment, sorts, or pageSize forces `page` to 1.
  * Patches that only touch `page` or `customerId` keep the requested page.
  */
 export function applyListParamsPatch(
@@ -60,7 +65,7 @@ export function applyListParamsPatch(
   patch: ListParamsPatch,
 ): CustomerHealthUrlParams {
   //////////////////////////////////
-  // 1. Merge — patch wins; canonicalize segment multi-select order.
+  // 1. Merge — patch wins; canonicalize segment + multi-level sorts.
   const next: CustomerHealthUrlParams = {
     ...current,
     ...patch,
@@ -68,6 +73,10 @@ export function applyListParamsPatch(
 
   if (patch.segment !== undefined) {
     next.segment = canonicalizeSegments(patch.segment);
+  }
+
+  if (patch.sorts !== undefined) {
+    next.sorts = canonicalizeSorts(patch.sorts);
   }
   //////////////////////////////////
 

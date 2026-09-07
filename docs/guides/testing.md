@@ -15,7 +15,7 @@ tests/
 
 | Area | Examples | Status |
 |---|---|---|
-| URL contract | parse/serialize, defaults, reset `page` → 1, clamp | Landed (`list-url-params.test.ts`) |
+| URL contract | parse/serialize, defaults, reset `page` → 1, clamp, sort header cycle | Landed (`list-url-params.test.ts`) |
 | Schemas / transforms | list + health Zod; raw → domain | Landed (`customer-schemas.test.ts`) |
 | Debounce helper | quiet period, cancel, flush | Landed (`debounce.test.ts`) |
 | Drawer hook | open/close, URL mirror, hydrate from `customerId` (mocked router) | Expected |

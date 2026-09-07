@@ -5,21 +5,23 @@
  *
  * Purpose: Client list island — toolbar, table, pagination, shared pending dim.
  * Used in: `CustomerHealthPage` (server composition shell).
- * Used for: Wire URL list controls (`useListUrl`) into search, `Pagination`,
- *   and `CustomerTable` without putting router logic in the server page.
+ * Used for: Wire URL list controls (`useListUrl`) into search, segment,
+ *   sort headers, `Pagination`, and `CustomerTable` without putting router
+ *   logic in the server page.
  *
  * Function Index:
  * - CustomerListShell({ list }) → toolbar + table + pagination
  *
  * Steps:
  * 1. Derive `isPending` / `patchParams` from current parsed URL params.
- * 2. Render search + segment toolbar, dimmable table, and pagination footer.
- * 3. Search / segment / page / page_size → `patchParams` → soft-nav `{ scroll: false }`.
+ * 2. Render search + segment toolbar, sortable table, and pagination footer.
+ * 3. Search / segment / sort / page / page_size → `patchParams` → soft-nav.
  */
 
 import { Pagination } from "@/shared/ui";
 
 import { useListUrl } from "../hooks/use-list-url";
+import { nextListSort } from "../lib/next-list-sort";
 import { LIST_PAGE_SIZES, type ListPageSize } from "../model/list-url-params";
 import type { CustomerListPageData } from "../server/load-customer-list";
 import { CustomerHealthToolbar } from "./customer-health-toolbar";
@@ -30,7 +32,7 @@ export type CustomerListShellProps = {
 };
 
 /**
- * Interactive list region: URL-driven search/pagination and shared pending dim.
+ * Interactive list region: URL-driven search/sort/pagination and shared pending dim.
  * Header stays on the server composition shell above this island.
  */
 export function CustomerListShell({ list }: CustomerListShellProps) {
@@ -53,6 +55,10 @@ export function CustomerListShell({ list }: CustomerListShellProps) {
         selectedRowId={list.params.customerId}
         emptyKind={list.emptyKind}
         isPending={isPending}
+        sorts={list.params.sorts}
+        onSortToggle={(key) => {
+          patchParams({ sorts: nextListSort(list.params.sorts, key) });
+        }}
       />
       <Pagination
         page={list.page}

@@ -99,7 +99,8 @@ shared/
 │   ├── table/                     # DataTable (landed)
 │   ├── pagination/                # Pagination footer (landed)
 │   ├── search-input/              # SearchInput debounce + rehydrate (landed)
-│   └── filter-option-buttons/     # Multi/single option button row (landed)
+│   ├── filter-option-buttons/     # Multi/single option button row (landed)
+│   └── sort-button/               # Dual-arrow header sort toggle (landed)
 ├── lib/                           # debounce, cn, url helpers
 └── hooks/
 ```
@@ -108,12 +109,12 @@ shared/
 
 | Component | Role | Status |
 |---|---|---|
-| Configurable `DataTable` | Header + rows from column config; `onRowClick` / selection / pending | Landed |
+| Configurable `DataTable` | Header + rows from column config; `onRowClick` / selection / pending; optional `aria-sort` | Landed |
 | `page-header` | Title + supporting paragraph | View-local for now; move to shared later |
 | `pagination-*` | Footer, page size, navigation | Landed |
 | Search input | Param label, placeholder, debounce | Landed |
 | Filter control | Multi-select option button row (`FilterOptionButtons`) | Landed |
-| Sort control | Header-cell island; URL sort/order | Expected |
+| Sort control | Header-cell `SortButton`; multi-level URL `sort=field:order,...` | Landed |
 | Panel / drawer shell | Children slot; a11y focus trap | Expected |
 
 ## Public API rule

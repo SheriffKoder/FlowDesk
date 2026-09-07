@@ -4,14 +4,14 @@
  * Purpose: Map view ResolvedListSort → entity CustomerListSort.
  * Used in: server/load-customer-list, GET /api/customers route adapter.
  * Used for: Keep URL-contract sort dialect and entity query input aligned
- *   without duplicating the kind/field/order mapping.
+ *   without duplicating the kind/keys mapping.
  *
  * Function Index:
  * - toEntityListSort(resolved) → CustomerListSort
  *
  * Steps:
  * 1. Default multi-key plan → `{ kind: "default" }` (entity applies health-then-name).
- * 2. Explicit column → `{ kind: "explicit", field, order }`.
+ * 2. Explicit multi-level → `{ kind: "explicit", keys }`.
  */
 
 import type { CustomerListSort } from "@/entities/customer";
@@ -33,11 +33,13 @@ export function toEntityListSort(resolved: ResolvedListSort): CustomerListSort {
   //////////////////////////////////
 
   //////////////////////////////////
-  // 2. Explicit column sort — field/order already validated by parse + resolve.
+  // 2. Explicit multi-level sort — fields/orders already validated.
   return {
     kind: "explicit",
-    field: resolved.field,
-    order: resolved.order,
+    keys: resolved.keys.map((spec) => ({
+      field: spec.field,
+      order: spec.order,
+    })),
   };
   //////////////////////////////////
 }

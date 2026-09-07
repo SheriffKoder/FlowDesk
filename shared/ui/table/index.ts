@@ -3,4 +3,4 @@
  */
 
 export { DataTable } from "./data-table";
-export type { DataTableProps, TableColumnDef } from "./types";
+export type { DataTableProps, TableAriaSort, TableColumnDef } from "./types";

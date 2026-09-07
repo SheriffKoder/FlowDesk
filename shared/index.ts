@@ -7,6 +7,7 @@ export {
   FilterOptionButtons,
   Pagination,
   SearchInput,
+  SortButton,
   getPaginationRange,
 } from "./ui";
 export type {
@@ -16,6 +17,9 @@ export type {
   PaginationProps,
   PaginationRange,
   SearchInputProps,
+  SortButtonProps,
+  SortDirection,
+  TableAriaSort,
   TableColumnDef,
 } from "./ui";
 

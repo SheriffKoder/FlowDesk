@@ -3,7 +3,7 @@
  */
 
 export { DataTable } from "./table";
-export type { DataTableProps, TableColumnDef } from "./table";
+export type { DataTableProps, TableAriaSort, TableColumnDef } from "./table";
 
 export { Pagination, getPaginationRange } from "./pagination";
 export type { PaginationProps, PaginationRange } from "./pagination";
@@ -16,3 +16,6 @@ export type {
   FilterOption,
   FilterOptionButtonsProps,
 } from "./filter-option-buttons";
+
+export { SortButton } from "./sort-button";
+export type { SortButtonProps, SortDirection } from "./sort-button";

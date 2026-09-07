@@ -12,13 +12,13 @@
  *
  * @example
  * serializeListParamsToString(DEFAULT_CUSTOMER_HEALTH_URL_PARAMS) // → ""
- * serializeListParamsToString({ ...defaults, segment: ["watch"], page: 2 })
- * // → "segment=watch&page=2"
+ * serializeListParamsToString({ ...defaults, sorts: [{ field: "mrr", order: "desc" }] })
+ * // → "sort=mrr:desc"
  *
  * Steps:
  * 1. Start an empty URLSearchParams.
  * 2. Write only non-default / non-null fields (unless includeDefaults).
- * 3. Pair explicit sort with order (default asc) for stable share links.
+ * 3. Write multi-level `sort=field:order,...` when sorts are present.
  */
 
 import {
@@ -43,18 +43,8 @@ export type SerializeListParamsOptions = {
  * Build `URLSearchParams` from typed list state.
  *
  * Omits empty search, empty segment/customerId, default page/size (unless
- * `includeDefaults`), and absent sort/order so first land stays triage-default
+ * `includeDefaults`), and empty sorts so first land stays triage-default
  * without writing sort into the URL.
- *
- * @param params - Parsed / patched Customer Health URL state
- * @param options - Serialization knobs (see {@link SerializeListParamsOptions})
- * @returns URLSearchParams ready for `router` / `<Link href>`
- *
- * @example
- * ```ts
- * serializeListParams({ ...defaults, sort: "health", order: null })
- * // → sort=health&order=asc
- * ```
  */
 export function serializeListParams(
   params: CustomerHealthUrlParams,
@@ -92,13 +82,11 @@ export function serializeListParams(
   //////////////////////////////////
 
   //////////////////////////////////
-  // 3. Explicit sort only — never canonicalize the health-then-name default.
-  if (params.sort !== null) {
-    searchParams.set(LIST_URL_PARAM_KEYS.sort, params.sort);
-    // Always pair order with an explicit sort for stable share links.
+  // 3. Explicit multi-level sort — never canonicalize the health-then-name default.
+  if (params.sorts.length > 0) {
     searchParams.set(
-      LIST_URL_PARAM_KEYS.order,
-      params.order ?? "asc",
+      LIST_URL_PARAM_KEYS.sort,
+      params.sorts.map((spec) => `${spec.field}:${spec.order}`).join(","),
     );
   }
   //////////////////////////////////
@@ -115,15 +103,6 @@ export function serializeListParams(
 
 /**
  * Serialize list params to a query string without a leading `?`.
- *
- * @param params - Parsed / patched Customer Health URL state
- * @param options - Passed through to {@link serializeListParams}
- * @returns Query string, or `""` when nothing would be written
- *
- * @example
- * ```ts
- * serializeListParamsToString(defaults) // → ""
- * ```
  */
 export function serializeListParamsToString(
   params: CustomerHealthUrlParams,

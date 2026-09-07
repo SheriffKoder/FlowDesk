@@ -4,22 +4,18 @@
  * Purpose: Unit coverage for Customer Health URL contract helpers.
  * Used in: Vitest suite (`npm test`); run whenever parse/serialize/page rules change.
  * Used for: Lock ADR-002 behaviors — safe fallbacks, clean first-land URLs,
- *   health-then-name default sort, page reset, and page clamp.
+ *   health-then-name default sort, multi-level append sorts, page reset/clamp.
  *
  * Function Index:
  * - params(patch?) — build CustomerHealthUrlParams from defaults + overrides
  *
  * Suites:
- * 1. parseListParams — empty / valid / invalid / trim / orphan order / arrays
- * 2. serializeListParams — omit defaults, round-trip, pair order, no default sort
- * 3. resolveListSort — default vs explicit
+ * 1. parseListParams — empty / valid / invalid / trim / multi-sort / legacy
+ * 2. serializeListParams — omit defaults, round-trip, multi-level sort string
+ * 3. resolveListSort — default vs explicit multi-level
  * 4. applyListParamsPatch — reset page vs keep page
  * 5. clampPage — shrink / empty / in-range
- *
- * Steps (plan-clean Step 2 Testing):
- * 1. Assert parse/serialize defaults including health-then-name resolution.
- * 2. Assert reset page → 1 when search/segment/sort/page_size change.
- * 3. Assert invalid param fallbacks and page clamp.
+ * 6. nextListSort — header toggle cycle + append levels + aria helpers
  */
 
 import { describe, expect, it } from "vitest";
@@ -29,6 +25,10 @@ import {
   clampPage,
   DEFAULT_CUSTOMER_HEALTH_URL_PARAMS,
   DEFAULT_LIST_SORT,
+  listSortAriaForColumn,
+  listSortDirectionForColumn,
+  listSortLevelForColumn,
+  nextListSort,
   parseListParams,
   resolveListSort,
   serializeListParamsToString,
@@ -41,9 +41,6 @@ import {
 
 /**
  * Build typed URL params from defaults plus a partial override.
- *
- * @param patch - Fields to override on DEFAULT_CUSTOMER_HEALTH_URL_PARAMS
- * @returns Full CustomerHealthUrlParams for assertions and serialize inputs
  */
 function params(
   patch: Partial<CustomerHealthUrlParams> = {},
@@ -57,22 +54,19 @@ function params(
 
 describe("parseListParams", () => {
   it("returns defaults for an empty query", () => {
-    // First land and empty bag must match the locked default object.
     expect(parseListParams({})).toEqual(DEFAULT_CUSTOMER_HEALTH_URL_PARAMS);
     expect(parseListParams(new URLSearchParams())).toEqual(
       DEFAULT_CUSTOMER_HEALTH_URL_PARAMS,
     );
   });
 
-  it("parses a full valid query", () => {
-    // Happy path: every list + drawer key maps to the typed shape.
+  it("parses a full valid query with multi-level sort", () => {
     const raw = new URLSearchParams({
       search: "acme",
       segment: "at_risk",
       page: "3",
       page_size: "10",
-      sort: "mrr",
-      order: "desc",
+      sort: "mrr:desc,name:asc",
       customerId: "cust_1",
     });
 
@@ -81,28 +75,38 @@ describe("parseListParams", () => {
       segment: ["at_risk"],
       page: 3,
       pageSize: 10,
-      sort: "mrr",
-      order: "desc",
+      sorts: [
+        { field: "mrr", order: "desc" },
+        { field: "name", order: "asc" },
+      ],
       customerId: "cust_1",
     });
   });
 
+  it("accepts legacy sort=field&order=dir as a single level", () => {
+    // Older single-column links still hydrate into sorts[].
+    expect(
+      parseListParams({ sort: "mrr", order: "desc" }),
+    ).toEqual(
+      params({
+        sorts: [{ field: "mrr", order: "desc" }],
+      }),
+    );
+  });
+
   it("falls back safely on invalid values", () => {
-    // Bad enums / sizes / ids must not throw; coerce to defaults.
     expect(
       parseListParams({
         segment: "nope",
         page: "0",
         page_size: "99",
-        sort: "unknown",
-        order: "sideways",
+        sort: "unknown:desc,also:bad",
         customerId: "  ",
       }),
     ).toEqual(DEFAULT_CUSTOMER_HEALTH_URL_PARAMS);
   });
 
   it("trims search and customerId", () => {
-    // Share links with padding should still hydrate clean values.
     expect(
       parseListParams({ search: "  acme  ", customerId: "  id-2  " }),
     ).toEqual(
@@ -113,14 +117,12 @@ describe("parseListParams", () => {
     );
   });
 
-  it("drops order when sort is missing or invalid", () => {
-    // Orphan order must not survive; resolveListSort owns default direction.
-    expect(parseListParams({ order: "desc" }).order).toBeNull();
-    expect(parseListParams({ sort: "nope", order: "desc" }).order).toBeNull();
+  it("drops orphan legacy order when sort is missing or invalid", () => {
+    expect(parseListParams({ order: "desc" }).sorts).toEqual([]);
+    expect(parseListParams({ sort: "nope", order: "desc" }).sorts).toEqual([]);
   });
 
   it("parses multi-select segments from comma lists and arrays", () => {
-    // Comma-joined share links and Next.js string[] both become a canonical list.
     expect(
       parseListParams({ segment: "at_risk,watch,nope" }),
     ).toEqual(params({ segment: ["watch", "at_risk"] }));
@@ -137,40 +139,31 @@ describe("parseListParams", () => {
 
 describe("serializeListParams", () => {
   it("omits defaults so first land stays clean", () => {
-    // Empty string = no query noise on triage-first land.
     expect(serializeListParamsToString(DEFAULT_CUSTOMER_HEALTH_URL_PARAMS)).toBe(
       "",
     );
   });
 
-  it("round-trips non-default values", () => {
-    // serialize → parse must restore the same typed object.
+  it("round-trips non-default values including multi-level sort", () => {
     const input = params({
       search: "beta",
       segment: ["watch", "at_risk"],
       page: 4,
       pageSize: 50,
-      sort: "name",
-      order: "asc",
+      sorts: [
+        { field: "mrr", order: "desc" },
+        { field: "name", order: "asc" },
+      ],
       customerId: "c9",
     });
 
     const query = serializeListParamsToString(input);
     expect(query).toContain("segment=watch%2Cat_risk");
+    expect(query).toContain("sort=mrr%3Adesc%2Cname%3Aasc");
     expect(parseListParams(new URLSearchParams(query))).toEqual(input);
   });
 
-  it("pairs order=asc when sort is set without order", () => {
-    // Explicit sort always ships with a direction for stable share links.
-    const query = serializeListParamsToString(
-      params({ sort: "health", order: null }),
-    );
-    expect(query).toContain("sort=health");
-    expect(query).toContain("order=asc");
-  });
-
   it("does not write default sort into the URL", () => {
-    // Health-then-name is query-only; never canonicalize into first-land URL.
     const query = serializeListParamsToString(DEFAULT_CUSTOMER_HEALTH_URL_PARAMS);
     expect(query).not.toContain("sort=");
     expect(query).not.toContain("order=");
@@ -182,24 +175,24 @@ describe("serializeListParams", () => {
 /////////////////////////////////////////////////////////////
 
 describe("resolveListSort", () => {
-  it("uses health-then-name when sort is absent", () => {
-    // Locked default: health asc (risk-first), then name asc.
-    expect(resolveListSort({ sort: null, order: null })).toEqual(
-      DEFAULT_LIST_SORT,
-    );
+  it("uses health-then-name when sorts are empty", () => {
+    expect(resolveListSort({ sorts: [] })).toEqual(DEFAULT_LIST_SORT);
   });
 
-  it("keeps an explicit sort and defaults missing order to asc", () => {
-    // Explicit column wins; missing order becomes asc (not the multi-key default).
-    expect(resolveListSort({ sort: "mrr", order: null })).toEqual({
+  it("keeps an explicit multi-level sort plan", () => {
+    expect(
+      resolveListSort({
+        sorts: [
+          { field: "mrr", order: "desc" },
+          { field: "owner", order: "asc" },
+        ],
+      }),
+    ).toEqual({
       kind: "explicit",
-      field: "mrr",
-      order: "asc",
-    });
-    expect(resolveListSort({ sort: "owner", order: "desc" })).toEqual({
-      kind: "explicit",
-      field: "owner",
-      order: "desc",
+      keys: [
+        { field: "mrr", order: "desc" },
+        { field: "owner", order: "asc" },
+      ],
     });
   });
 });
@@ -209,26 +202,25 @@ describe("resolveListSort", () => {
 /////////////////////////////////////////////////////////////
 
 describe("applyListParamsPatch", () => {
-  it("resets page to 1 when search, segment, sort, or pageSize change", () => {
-    // Staying on page 5 after narrowing filters would show an empty window.
+  it("resets page to 1 when search, segment, sorts, or pageSize change", () => {
     const current = params({ page: 5, search: "a", segment: ["healthy"] });
 
     expect(applyListParamsPatch(current, { search: "b" }).page).toBe(1);
     expect(
       applyListParamsPatch(current, { segment: ["watch"] }).page,
     ).toBe(1);
-    expect(applyListParamsPatch(current, { sort: "name", order: "asc" }).page).toBe(
-      1,
-    );
+    expect(
+      applyListParamsPatch(current, {
+        sorts: [{ field: "name", order: "asc" }],
+      }).page,
+    ).toBe(1);
     expect(applyListParamsPatch(current, { pageSize: 50 }).page).toBe(1);
-    // Same segment contents (new array) must not reset page.
     expect(
       applyListParamsPatch(current, { segment: ["healthy"] }).page,
     ).toBe(5);
   });
 
   it("keeps page when only page or customerId changes", () => {
-    // Pagination and drawer open must not wipe the current page index.
     const current = params({ page: 5 });
 
     expect(applyListParamsPatch(current, { page: 3 }).page).toBe(3);
@@ -244,18 +236,84 @@ describe("applyListParamsPatch", () => {
 
 describe("clampPage", () => {
   it("clamps past the last page when the result set shrinks", () => {
-    // 25 rows @ 10 → 3 pages; page 5 must become 3.
     expect(clampPage(5, 25, 10)).toBe(3);
     expect(clampPage(9, 20, 20)).toBe(1);
   });
 
   it("returns page 1 for empty or invalid totals", () => {
-    // Empty list and negative page still land on a safe first page.
     expect(clampPage(3, 0, 20)).toBe(1);
     expect(clampPage(-2, 40, 20)).toBe(1);
   });
 
   it("leaves an in-range page unchanged", () => {
     expect(clampPage(2, 40, 20)).toBe(2);
+  });
+});
+
+/////////////////////////////////////////////////////////////
+// nextListSort — header SortButton cycle (multi-level append)
+/////////////////////////////////////////////////////////////
+
+describe("nextListSort", () => {
+  it("cycles none → asc → desc → remove on the same column", () => {
+    expect(nextListSort([], "mrr")).toEqual([
+      { field: "mrr", order: "asc" },
+    ]);
+    expect(
+      nextListSort([{ field: "mrr", order: "asc" }], "mrr"),
+    ).toEqual([{ field: "mrr", order: "desc" }]);
+    expect(
+      nextListSort([{ field: "mrr", order: "desc" }], "mrr"),
+    ).toEqual([]);
+  });
+
+  it("appends a new level when a different column is clicked", () => {
+    // url-kit append dialect — do not replace the primary sort.
+    expect(
+      nextListSort([{ field: "mrr", order: "desc" }], "owner"),
+    ).toEqual([
+      { field: "mrr", order: "desc" },
+      { field: "owner", order: "asc" },
+    ]);
+  });
+
+  it("flips or removes a secondary level without dropping the primary", () => {
+    const twoLevels = [
+      { field: "mrr" as const, order: "desc" as const },
+      { field: "owner" as const, order: "asc" as const },
+    ];
+    expect(nextListSort(twoLevels, "owner")).toEqual([
+      { field: "mrr", order: "desc" },
+      { field: "owner", order: "desc" },
+    ]);
+    expect(
+      nextListSort(
+        [
+          { field: "mrr", order: "desc" },
+          { field: "owner", order: "desc" },
+        ],
+        "owner",
+      ),
+    ).toEqual([{ field: "mrr", order: "desc" }]);
+  });
+});
+
+describe("listSortDirectionForColumn / level / aria", () => {
+  it("keeps arrows and aria inactive when URL sorts are empty", () => {
+    expect(listSortDirectionForColumn([], "health")).toBeNull();
+    expect(listSortAriaForColumn([], "health")).toBe("none");
+    expect(listSortLevelForColumn([], "health")).toBeNull();
+  });
+
+  it("maps active columns to direction, level, and aria-sort", () => {
+    const sorts = [
+      { field: "mrr" as const, order: "desc" as const },
+      { field: "name" as const, order: "asc" as const },
+    ];
+    expect(listSortDirectionForColumn(sorts, "mrr")).toBe("desc");
+    expect(listSortLevelForColumn(sorts, "mrr")).toBe(0);
+    expect(listSortAriaForColumn(sorts, "mrr")).toBe("descending");
+    expect(listSortLevelForColumn(sorts, "name")).toBe(1);
+    expect(listSortDirectionForColumn(sorts, "owner")).toBeNull();
   });
 });

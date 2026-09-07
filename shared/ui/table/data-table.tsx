@@ -48,6 +48,7 @@ export function DataTable<T>({
                 <th
                   key={column.id}
                   scope="col"
+                  aria-sort={column.ariaSort}
                   className={cn(
                     "h-11 border-b border-border bg-muted px-3 text-xs font-medium uppercase tracking-wide text-muted-foreground",
                     column.headerClassName,
