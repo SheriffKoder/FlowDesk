@@ -12,11 +12,12 @@
 page.tsx (Server)
   └─ loadCustomerList(searchParams)  ← views/customer-health/server
        └─ CustomerHealthPage
-            ├─ PageHeader              ← server OK (view-local until shared page-header)
             └─ CustomerListShell       ← client (list URL + details panel)
                  ├─ toolbar / table / pagination
                  └─ CustomerDetailsPanel → shared DetailsPanel (in-layout)
 ```
+
+Layout chrome (`AppShell` / `AppHeader` / sidebar) lives in `widgets/app-sidebar` and wraps all routes from `app/layout.tsx`. Page title + description come from `appPages` via `getCurrentPage`.
 
 List presentation is the dumb shared `DataTable` (`shared/ui/table`): `columns`, `data`, `getRowId`, optional `onRowClick` / `selectedRowId` / `isPending`. Domain column config stays in the view.
 

@@ -1,8 +1,8 @@
 # Widget — App sidebar
 
-Slim icon chrome for FlowDesk.
+App chrome for FlowDesk: icon rail, mobile dock, and layout header.
 
-**Owns:** nav config (`url` / `icon` / `disabled` / `label`), desktop rail, mobile bottom dock, `AppShell` frame.
+**Owns:** page config (`icon` / `label` / `description` / `url`), `getCurrentPage`, desktop rail, mobile dock, `AppHeader`, `AppShell` frame.
 
 **Does not own:** route pages or feature workflows.
 
@@ -10,8 +10,10 @@ Slim icon chrome for FlowDesk.
 
 | Viewport | Placement | Logo |
 |---|---|---|
-| `md+` | Left rail (`w-16`) | Fixed-height mark (`h-14`) |
-| `<md` | Bottom bar | Hidden; icons scroll horizontally |
+| `md+` | Left rail (`w-20`) | Fixed-height mark (`h-20`, matches header) |
+| `<md` | Bottom bar | Hidden; larger icons, `justify-around` |
+
+Top `AppHeader` shares `h-20` + `border-border/40` + `bg-background` with the rail mark (see `model/chrome.ts`). Trailing: `HeaderActions` (inline on `md+`, `⋯` dropdown on mobile) → vertical spacer → `UserArea` (demo name + live date).
 
 ## Composition
 
@@ -19,8 +21,10 @@ Slim icon chrome for FlowDesk.
 app/layout.tsx
   └─ AppShell
        ├─ AppSidebar variant="rail"   ← desktop
-       ├─ {children}
+       ├─ column
+       │    ├─ AppHeader              ← icon + h1 + description from URL
+       │    └─ {children}
        └─ AppSidebar variant="dock"   ← mobile
 ```
 
-Nav items live in `model/nav-config.ts` — extend there when adding routes.
+Pages live in `model/page-config.ts`. Nav items are derived for the sidebar; the header resolves the active page via `lib/get-current-page.ts`.

@@ -70,7 +70,7 @@ app/
 views/
 └── customer-health/
     ├── README.md
-    ├── ui/                        # PageHeader, toolbar, CustomerTable, list shell (+ details)
+    ├── ui/                        # toolbar, CustomerTable, list shell (+ details)
     ├── hooks/
     ├── model/                     # list-config, list-url-params, columns, table props
     └── lib/                       # parse/serialize list URL, page reset/clamp, resolve sort
@@ -95,7 +95,7 @@ entities/
     └── README.md
 
 widgets/                           # app chrome + composed reusable UI
-└── app-sidebar/                   # AppShell + slim icon rail / mobile dock
+└── app-sidebar/                   # AppShell + AppHeader + slim icon rail / mobile dock
 
 shared/
 ├── ui/
@@ -114,7 +114,7 @@ shared/
 | Component | Role | Status |
 |---|---|---|
 | Configurable `DataTable` | Header + rows from column config; `onRowClick` / selection / pending; optional `aria-sort` | Landed |
-| `page-header` | Title + supporting paragraph | View-local for now; move to shared later |
+| `page-header` | Title + supporting paragraph | Replaced by layout `AppHeader` in `widgets/app-sidebar` |
 | `pagination-*` | Footer, page size, navigation | Landed |
 | Search input | Param label, placeholder, debounce | Landed |
 | Filter control | Multi-select option button row (`FilterOptionButtons`) | Landed |

@@ -1,7 +1,7 @@
 /**
  * @file widgets/app-sidebar/ui/app-shell.tsx
  *
- * Purpose: Root chrome — sidebar + main content region.
+ * Purpose: Root chrome — sidebar + header + main content region.
  * Used in: `app/layout.tsx`.
  * Used for: Own viewport height; place sidebar left (desktop) / bottom (mobile).
  *
@@ -9,6 +9,7 @@
  * - AppShell({ children }) → flex shell around page content
  */
 
+import { AppHeader } from "./app-header";
 import { AppSidebar } from "./app-sidebar";
 
 export type AppShellProps = {
@@ -19,8 +20,8 @@ export type AppShellProps = {
  * Full-viewport app frame. Children fill the remaining space (`min-h-0` for nested scroll).
  *
  * Layout:
- * - `md+`: rail left → content
- * - `<md`: content → bottom dock (no logo)
+ * - `md+`: rail left → (header + content)
+ * - `<md`: (header + content) → bottom dock (no logo)
  */
 export function AppShell({ children }: AppShellProps) {
   return (
@@ -28,7 +29,10 @@ export function AppShell({ children }: AppShellProps) {
       <AppSidebar variant="rail" className="hidden md:flex" />
 
       <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
-        {children}
+        <AppHeader />
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+          {children}
+        </div>
       </div>
 
       <AppSidebar variant="dock" className="flex md:hidden" />

@@ -22,6 +22,10 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 import { appNavItems, type AppNavItem } from "../model/nav-config";
+import {
+  APP_CHROME_BRAND_HEIGHT,
+  APP_CHROME_RAIL_WIDTH,
+} from "../model/chrome";
 
 export type AppSidebarVariant = "rail" | "dock";
 
@@ -135,16 +139,22 @@ export function AppSidebar({ variant, className }: AppSidebarProps) {
   return (
     <aside
       className={cn(
-        "flex h-full w-16 shrink-0 flex-col border-r border-border/40 bg-background",
+        "flex h-full shrink-0 flex-col border-r border-border/40 bg-background",
+        APP_CHROME_RAIL_WIDTH,
         className,
       )}
       aria-label="Primary"
     >
-      {/* Master mark — fixed-height brand block */}
-      <div className="flex h-14 shrink-0 items-center justify-center border-b border-border/40">
+      {/* Master mark — fixed-height brand block (matches AppHeader) */}
+      <div
+        className={cn(
+          "flex shrink-0 items-center justify-center border-b border-border/40",
+          APP_CHROME_BRAND_HEIGHT,
+        )}
+      >
         <Link
           href="/customers/health"
-          className="flex size-8 items-center justify-center rounded-lg bg-primary text-xs font-semibold text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="flex size-9 items-center justify-center rounded-lg bg-primary text-sm font-semibold text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           aria-label="FlowDesk home"
           title="FlowDesk"
         >
@@ -153,7 +163,7 @@ export function AppSidebar({ variant, className }: AppSidebarProps) {
       </div>
 
       <nav
-        className="flex flex-1 flex-col items-center gap-1 overflow-y-auto py-3"
+        className="flex flex-1 flex-col items-center gap-1.5 overflow-y-auto py-4"
         aria-label="Main"
       >
         <NavIconList pathname={pathname} />

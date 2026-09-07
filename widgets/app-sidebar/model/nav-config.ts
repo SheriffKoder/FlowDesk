@@ -1,58 +1,32 @@
 /**
  * @file widgets/app-sidebar/model/nav-config.ts
  *
- * Purpose: App chrome nav items for the slim icon sidebar.
- * Used in: `AppSidebar` (desktop rail + mobile bottom bar).
- * Used for: Single source of truth for url / icon / disabled / label.
+ * Purpose: Sidebar / dock items derived from {@link appPages}.
+ * Used in: `AppSidebar`.
+ * Used for: Keep nav icons in sync with page chrome metadata.
  */
 
-import {
-  HeartPulse,
-  Inbox,
-  LayoutDashboard,
-  Settings,
-  type LucideIcon,
-} from "lucide-react";
+import { appPages, type AppPageConfig } from "./page-config";
 
 export type AppNavItem = {
   id: string;
   /** Accessible name (tooltip + aria-label). */
   label: string;
   url: string;
-  icon: LucideIcon;
+  icon: AppPageConfig["icon"];
   disabled?: boolean;
 };
 
 /**
- * Primary app destinations. Disabled entries render as non-links.
- * Extend here when new routes land — do not hard-code icons in the UI.
+ * Primary app destinations shown in the icon rail / dock.
+ * Driven by `appPages` where `showInNav !== false`.
  */
-export const appNavItems: readonly AppNavItem[] = [
-  {
-    id: "health",
-    label: "Customer Health",
-    url: "/customers/health",
-    icon: HeartPulse,
-  },
-  {
-    id: "dashboard",
-    label: "Dashboard",
-    url: "/",
-    icon: LayoutDashboard,
-    disabled: true,
-  },
-  {
-    id: "inbox",
-    label: "Inbox",
-    url: "/inbox",
-    icon: Inbox,
-    disabled: true,
-  },
-  {
-    id: "settings",
-    label: "Settings",
-    url: "/settings",
-    icon: Settings,
-    disabled: true,
-  },
-] as const;
+export const appNavItems: readonly AppNavItem[] = appPages
+  .filter((page) => page.showInNav !== false)
+  .map((page) => ({
+    id: page.id,
+    label: page.label,
+    url: page.url,
+    icon: page.icon,
+    disabled: page.disabled,
+  }));

@@ -6,7 +6,7 @@ Cross-domain primitives with **no business logic**. Dependency leaf — anything
 
 | Path | Role |
 |---|---|
-| `ui/` | page-header, table, pagination, search, filter, sort, panel/drawer shell |
+| `ui/` | table, pagination, search, filter, sort, panel/drawer shell |
 | `lib/` | debounce, `cn`, URL helpers |
 | `hooks/` | reusable client hooks with no domain coupling |
 

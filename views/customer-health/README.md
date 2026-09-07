@@ -14,7 +14,6 @@ Copyable list pattern: [docs/architecture/list-field-catalog.md](../../docs/arch
 page.tsx (Server)
   └─ loadCustomerList(searchParams)
        └─ CustomerHealthPage
-            ├─ PageHeader                 ← server (view-local for now)
             └─ CustomerListShell          ← client island
                  ├─ CustomerHealthToolbar ← full width
                  ├─ table + details row
@@ -22,6 +21,8 @@ page.tsx (Server)
                  │    └─ CustomerDetailsPanel  ← shared DetailsPanel (in-layout)
                  └─ Pagination            ← full width
 ```
+
+Page title / description render in layout `AppHeader` (`widgets/app-sidebar`) from `appPages` + `getCurrentPage` — not in the view.
 
 `CustomerTable` owns column config and list props; `shared/ui` `DataTable` stays dumb (columns, data, onRowClick, selection, `aria-sort`). Name cells render the feature `CustomerPrefetchButton` (pill Open + chevron): hover/focus warms the health cache; click opens details with `stopPropagation` so the row handler is not double-fired.
 
