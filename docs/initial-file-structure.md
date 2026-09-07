@@ -94,7 +94,8 @@ entities/
     ├── docs/responsibilities.md
     └── README.md
 
-widgets/                           # only if a composed block is reused
+widgets/                           # app chrome + composed reusable UI
+└── app-sidebar/                   # AppShell + slim icon rail / mobile dock
 
 shared/
 ├── ui/

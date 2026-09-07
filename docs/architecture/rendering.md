@@ -3,8 +3,8 @@
 ## Default
 
 - **Server Components first** for the Customer Health route (`page.tsx`).
-- Introduce `"use client"` only at interactive islands (toolbar, sort controls, details panel / list shell, prefetch button).
-- Root layout only; no nested customers layout this phase.
+- Introduce `"use client"` only at interactive islands (toolbar, sort controls, details panel / list shell, prefetch button, app sidebar).
+- Root layout wraps pages in `AppShell` (`widgets/app-sidebar`); slim icon rail on desktop, bottom dock on mobile.
 
 ## Route composition
 

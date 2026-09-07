@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { ThemeProvider } from "next-themes";
+
+import { AppShell } from "@/widgets/app-sidebar";
+
 import "./globals.css";
 
 const defaultUrl = process.env.VERCEL_URL
@@ -9,8 +12,8 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata: Metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "Next.js App",
-  description: "Built with Next.js",
+  title: "FlowDesk",
+  description: "Customer success workspace",
 };
 
 const geistSans = Geist({
@@ -33,7 +36,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <AppShell>{children}</AppShell>
         </ThemeProvider>
       </body>
     </html>
