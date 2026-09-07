@@ -11,10 +11,17 @@ export {
   resolveListSort,
   serializeListParams,
   serializeListParamsToString,
+  toEntityListSort,
   type ListParamsPatch,
   type RawSearchParams,
   type SerializeListParamsOptions,
 } from "./lib";
+
+export {
+  loadCustomerList,
+  type CustomerListEmptyKind,
+  type CustomerListPageData,
+} from "./server/load-customer-list";
 
 export {
   CUSTOMER_SEGMENTS,

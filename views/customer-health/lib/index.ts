@@ -25,3 +25,4 @@ export {
   type SerializeListParamsOptions,
 } from "./serialize-list-params";
 export { resolveListSort } from "./resolve-list-sort";
+export { toEntityListSort } from "./to-entity-list-sort";

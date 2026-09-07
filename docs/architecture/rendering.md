@@ -10,13 +10,17 @@
 
 ```
 page.tsx (Server)
-  ├─ PageHeader              ← server OK (view-local until shared page-header)
-  ├─ CustomerHealthToolbar   ← client (URL + useTransition)
-  ├─ CustomerTable           ← view wiring (columns in model/) → shared DataTable
-  └─ CustomerDrawerHost      ← client (open state + health fetch)
+  └─ loadCustomerList(searchParams)  ← views/customer-health/server
+       └─ CustomerHealthPage
+            ├─ PageHeader              ← server OK (view-local until shared page-header)
+            ├─ CustomerHealthToolbar   ← client (URL + useTransition)
+            ├─ CustomerTable           ← view wiring (columns in model/) → shared DataTable
+            └─ CustomerDrawerHost      ← client (open state + health fetch)
 ```
 
 List presentation is the dumb shared `DataTable` (`shared/ui/table`): `columns`, `data`, `getRowId`, optional `onRowClick` / `selectedRowId` / `isPending`. Domain column config stays in the view.
+
+First paint loads rows via `loadCustomerList` (entity `listCustomers`); fixtures stay behind the repository.
 
 ## Loading model
 

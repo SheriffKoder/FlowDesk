@@ -2,7 +2,8 @@
  * @file app/api/customers/route.ts
  *
  * Purpose: Thin GET /api/customers adapter → listCustomers query.
- * Used in: Customer Health page fetch (later), integration tests.
+ * Used in: Integration tests; optional clients. Page uses `loadCustomerList`
+ *   (same dialect) instead of self-HTTP.
  * Used for: Map URL searchParams to entity input; map errors to HTTP status.
  *
  * Steps:
@@ -13,31 +14,12 @@
 
 import { NextResponse } from "next/server";
 
-import {
-  isCustomerError,
-  listCustomers,
-  type CustomerListSort,
-} from "@/entities/customer";
+import { isCustomerError, listCustomers } from "@/entities/customer";
 import {
   parseListParams,
   resolveListSort,
+  toEntityListSort,
 } from "@/views/customer-health";
-
-/**
- * Map view ResolvedListSort → entity CustomerListSort.
- */
-function toEntitySort(
-  resolved: ReturnType<typeof resolveListSort>,
-): CustomerListSort {
-  if (resolved.kind === "default") {
-    return { kind: "default" };
-  }
-  return {
-    kind: "explicit",
-    field: resolved.field,
-    order: resolved.order,
-  };
-}
 
 /**
  * GET /api/customers — paginated, filterable customer list.
@@ -48,7 +30,7 @@ export async function GET(request: Request) {
     // 1. Parse + resolve list URL contract from the request query.
     const url = new URL(request.url);
     const params = parseListParams(url.searchParams);
-    const sort = toEntitySort(resolveListSort(params));
+    const sort = toEntityListSort(resolveListSort(params));
     //////////////////////////////////
 
     //////////////////////////////////

@@ -2,7 +2,7 @@
 
 **Purpose:** Parse, serialize, and derive list/drawer URL state for `/customers/health`.
 
-**Used in:** `app/customers/health/page.tsx` (soon), toolbar / pagination / sort islands, drawer host, entity list query, `tests/unit/list-url-params.test.ts`.
+**Used in:** `server/load-customer-list.ts`, `app/api/customers`, toolbar / pagination / sort islands, drawer host, `tests/unit/list-url-params.test.ts`.
 
 **Used for:** Keep one typed contract for `searchParams` so UI and API share the same defaults, page-reset, and health-then-name sort rules (ADR-002).
 
@@ -13,6 +13,7 @@
 | `parse-list-params.ts` | Raw `searchParams` → `CustomerHealthUrlParams` |
 | `serialize-list-params.ts` | Typed params → `URLSearchParams` / query string |
 | `resolve-list-sort.ts` | Absent sort → default health (risk-first) then name |
+| `to-entity-list-sort.ts` | View resolved sort → entity `listCustomers` sort |
 | `reset-page.ts` | Patch merge + reset `page` → 1 on filter/sort/size change |
 | `clamp-page.ts` | Clamp `page` when totals shrink |
 | `index.ts` | Public barrel for this folder |
@@ -21,9 +22,9 @@ Param names, enums, and defaults live in `../model/list-url-params.ts`.
 
 ## Steps (typical call path)
 
-1. **Server page** — `parseListParams(searchParams)` then `resolveListSort(params)`.
+1. **Server page** — `loadCustomerList(searchParams)` (parse → resolve → `toEntityListSort` → `listCustomers`).
 2. **Client controls** — `applyListParamsPatch` → `serializeListParams` → `router` / `<Link>` with `{ scroll: false }`.
-3. **After list fetch** — `clampPage(page, total, pageSize)` if the result set shrunk.
+3. **After list fetch** — page clamp already happens inside `listCustomers`; `clampPage` remains for client-side guards.
 
 ## Rules
 

@@ -4,7 +4,11 @@
  */
 
 import type { Metadata } from "next";
-import { CustomerHealthPage } from "@/views/customer-health";
+
+import {
+  CustomerHealthPage,
+  loadCustomerList,
+} from "@/views/customer-health";
 
 export const metadata: Metadata = {
   title: "Customer Health | FlowDesk",
@@ -12,6 +16,13 @@ export const metadata: Metadata = {
     "See which accounts are healthy and which need attention so you can prioritize outreach.",
 };
 
-export default function Page() {
-  return <CustomerHealthPage />;
+type PageProps = {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
+
+export default async function Page({ searchParams }: PageProps) {
+  const raw = await searchParams;
+  const list = loadCustomerList(raw);
+
+  return <CustomerHealthPage list={list} />;
 }

@@ -16,7 +16,7 @@ tests/
 | Area | Examples | Status |
 |---|---|---|
 | URL contract | parse/serialize, defaults, reset `page` → 1, clamp | Landed (`list-url-params.test.ts`) |
-| Schemas / transforms | list + health Zod; raw → domain | Expected |
+| Schemas / transforms | list + health Zod; raw → domain | Landed (`customer-schemas.test.ts`) |
 | Drawer hook | open/close, URL mirror, hydrate from `customerId` (mocked router) | Expected |
 | Health client cache | set / get / hit after prefetch | Expected |
 
@@ -24,9 +24,9 @@ Skip heavy tests on pure presentational chrome unless it encodes real rules.
 
 ## Integration (three required steps)
 
-1. **`GET /api/customers`** — search, segment, page, page_size, sort/order against fixtures.  
-2. **`GET /api/customers/{id}/health`** — happy path + not-found.  
-3. **List wiring** — `searchParams` → query → shaped list props (server helper / query use-case).
+1. **`GET /api/customers`** — search, segment, page, page_size, sort/order against fixtures. Landed (`customers-list.api.test.ts`).  
+2. **`GET /api/customers/{id}/health`** — happy path + not-found. Landed (`customer-health.api.test.ts`).  
+3. **List wiring** — `searchParams` → `loadCustomerList` → shaped list props. Landed (`customer-list-page.test.ts`).
 
 ## Out of scope (this phase)
 
