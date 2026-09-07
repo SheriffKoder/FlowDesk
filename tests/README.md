@@ -9,4 +9,11 @@ tests/
 └── fixtures/      # Shared customer/health fixtures
 ```
 
-Runner scripts and first real cases land with later Foundation / Data tickets. See [docs/guides/testing.md](../docs/guides/testing.md).
+**Runner:** Vitest (`npm test` / `npm run test:watch`).
+
+| Path | Status |
+|---|---|
+| `tests/unit/list-url-params.test.ts` | Landed — URL parse/serialize, defaults, page reset, clamp |
+| Integration + fixtures | Expected with Data & API tickets |
+
+See [docs/guides/testing.md](../docs/guides/testing.md).
