@@ -8,13 +8,13 @@
  * Used for: Wire URL list controls + customer details open beside the table.
  *
  * Function Index:
- * - CustomerListShell({ list }) → toolbar / table+panel row / pagination
+ * - CustomerListShell({ list }) → data widget / details / pagination
  *
  * Steps:
  * 1. Derive `isPending` / `patchParams` from current parsed URL params.
  * 2. `useCustomerDrawer` — local open first; mirror `customerId` via patch.
- * 3. Toolbar + pagination stay full-width; only the table row shares space
- *    with the in-layout details panel.
+ * 3. Toolbar + table share one widget surface; details panel is a sibling
+ *    widget; pagination stays full-width below.
  */
 
 import { cn } from "@/lib/utils";
@@ -57,24 +57,24 @@ export function CustomerListShell({ list }: CustomerListShellProps) {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-4">
-      <CustomerHealthToolbar
-        search={list.params.search}
-        onSearchChange={(search) => {
-          patchParams({ search });
-        }}
-        segment={list.params.segment}
-        onSegmentChange={(segment) => {
-          patchParams({ segment });
-        }}
-      />
-
       <div className="flex min-h-0 flex-1 gap-4">
         <div
           className={cn(
-            "flex min-h-0 min-w-0 flex-1 flex-col",
+            "flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-lg border border-widget-border bg-widget text-widget-foreground",
             drawer.open && "max-lg:hidden",
           )}
         >
+          <CustomerHealthToolbar
+            search={list.params.search}
+            onSearchChange={(search) => {
+              patchParams({ search });
+            }}
+            segment={list.params.segment}
+            onSegmentChange={(segment) => {
+              patchParams({ segment });
+            }}
+          />
+
           <CustomerTable
             rows={list.rows}
             selectedRowId={drawer.selectedCustomerId}

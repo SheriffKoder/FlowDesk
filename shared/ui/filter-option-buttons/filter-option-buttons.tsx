@@ -15,7 +15,6 @@
  * 2. On click — toggle (multi) or set/clear (single); emit ordered next list.
  */
 
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 import type { FilterOptionButtonsProps } from "./types";
@@ -83,20 +82,21 @@ export function FilterOptionButtons({
       {options.map((option) => {
         const isSelected = selected.has(option.value);
         return (
-          <Button
+          <button
             key={option.value}
             type="button"
-            size="sm"
-            variant={isSelected ? "default" : "outline"}
             disabled={option.disabled}
             aria-pressed={isSelected}
-            className="h-9 font-normal"
+            className={cn(
+              "inline-flex h-9 items-center justify-center rounded-md px-3 text-sm font-normal",
+              isSelected ? "button-action" : "button-action-not-selected",
+            )}
             onClick={() => {
               handleToggle(option.value);
             }}
           >
             {option.label}
-          </Button>
+          </button>
         );
       })}
     </div>

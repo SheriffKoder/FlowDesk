@@ -11,9 +11,9 @@
     --card-foreground: 222 25% 11%;
     --popover: 0 0% 100%;
     --popover-foreground: 222 25% 11%;
-    /* Near-ink actions (Notion-like); focus uses --ring blue */
-    --primary: 222 25% 12%;
-    --primary-foreground: 210 40% 98%;
+    /* Brand primary */
+    --primary: 242 82% 63%;
+    --primary-foreground: 0 0% 100%;
     --secondary: 220 14% 95%;
     --secondary-foreground: 222 25% 12%;
     --muted: 220 14% 95%;
@@ -21,12 +21,17 @@
     /* Row hover / selected wash */
     --accent: 220 14% 94%;
     --accent-foreground: 222 25% 12%;
-    --destructive: 0 72% 51%;
+    /* Maroon destructive (logout / danger) */
+    --destructive: 345 55% 35%;
     --destructive-foreground: 0 0% 100%;
     --border: 220 13% 90%;
     --input: 220 13% 90%;
-    /* Cool professional blue — links / focus only */
-    --ring: 217 91% 50%;
+    /* Work surfaces (list + details) sit on the soft canvas */
+    --widget: 0 0% 100%;
+    --widget-foreground: 222 25% 11%;
+    --widget-border: 220 10% 94%;
+    /* Focus ring matches brand primary */
+    --ring: 242 82% 63%;
     /* Usage charts: blue, teal, amber, cyan, red */
     --chart-1: 217 91% 50%;
     --chart-2: 173 58% 39%;
@@ -43,19 +48,22 @@
     --card-foreground: 210 20% 98%;
     --popover: 222 18% 9%;
     --popover-foreground: 210 20% 98%;
-    --primary: 210 20% 98%;
-    --primary-foreground: 222 25% 12%;
+    --primary: 158 45% 59%;
+    --primary-foreground: 222 25% 10%;
     --secondary: 222 14% 14%;
     --secondary-foreground: 210 20% 98%;
     --muted: 222 14% 14%;
     --muted-foreground: 215 12% 65%;
     --accent: 222 14% 16%;
     --accent-foreground: 210 20% 98%;
-    --destructive: 0 62% 45%;
+    --destructive: 345 48% 52%;
     --destructive-foreground: 0 0% 100%;
     --border: 222 12% 18%;
     --input: 222 12% 18%;
-    --ring: 217 91% 60%;
+    --widget: 222 18% 9%;
+    --widget-foreground: 210 20% 98%;
+    --widget-border: 222 10% 12%;
+    --ring: 158 45% 59%;
     --chart-1: 217 91% 60%;
     --chart-2: 160 60% 45%;
     --chart-3: 43 74% 55%;
@@ -70,6 +78,109 @@
   }
   body {
     @apply bg-background text-foreground antialiased;
+  }
+}
+
+/**
+ * Data table chrome — no own surface/border; parent widget provides that.
+ * Sticky header uses --widget so scrolled rows do not show through.
+ */
+@layer components {
+  /**
+   * Secondary control: widget surface + widget border.
+   * Used for pagination prev/next.
+   */
+  .button-secondary {
+    @apply border border-widget-border bg-widget text-widget-foreground;
+    @apply transition-colors;
+    @apply hover:bg-accent/60 hover:text-accent-foreground;
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring;
+    @apply disabled:pointer-events-none disabled:opacity-40;
+  }
+
+  /**
+   * Primary action fill — selected segment filter (and similar commits).
+   */
+  .button-action {
+    @apply border border-transparent transition-colors;
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring;
+    @apply disabled:pointer-events-none disabled:opacity-40;
+    background-color: hsl(var(--primary));
+    color: hsl(var(--background));
+  }
+
+  .button-action:hover {
+    background-color: hsl(var(--primary) / 0.9);
+  }
+
+  /**
+   * Idle primary action chip — soft primary accent (unselected segment).
+   * Uses raw hsl() alpha (Tailwind `@apply …/10` breaks on `hsl(var(--primary))`).
+   */
+  .button-action-not-selected {
+    @apply transition-colors;
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring;
+    @apply disabled:pointer-events-none disabled:opacity-40;
+    border-width: 1px;
+    border-color: hsl(var(--primary) / 0.3);
+    background-color: hsl(var(--primary) / 0.12);
+    color: hsl(var(--primary));
+  }
+
+  .button-action-not-selected:hover {
+    background-color: hsl(var(--primary) / 0.18);
+  }
+
+  /**
+   * Active chrome control — current surface → darker → darker.
+   * Mixes toward `--background` so the active chip settles into the canvas.
+   * Used for sidebar active nav icon.
+   */
+  .button-active {
+    @apply border border-black/5 text-foreground;
+    @apply transition-colors;
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring;
+    @apply disabled:pointer-events-none disabled:opacity-40;
+    background-image: linear-gradient(
+      to bottom,
+      hsl(var(--muted)),
+      color-mix(in oklab, hsl(var(--muted)) 70%, hsl(var(--background)) 30%),
+      color-mix(in oklab, hsl(var(--muted)) 45%, hsl(var(--background)) 55%)
+    );
+  }
+
+  .data-table-root {
+    @apply flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden;
+  }
+
+  .data-table {
+    @apply w-full min-w-[40rem] table-fixed border-separate border-spacing-0 text-left text-sm;
+  }
+
+  .data-table thead {
+    @apply sticky top-0 z-10;
+  }
+
+  .data-table th {
+    @apply h-11 px-3 text-xs font-medium uppercase tracking-wide text-muted-foreground;
+    background-color: hsl(var(--widget));
+  }
+
+  .data-table td {
+    @apply h-11 px-3 text-foreground;
+  }
+
+  .data-table tbody tr[data-interactive]:not([data-selected]):hover {
+    background-color: hsl(var(--primary) / 0.12);
+  }
+
+  .data-table tbody tr[data-selected] {
+    background-color: hsl(var(--primary) / 0.5);
+  }
+
+  :root:not(.dark) .data-table tbody tr[data-selected],
+  :root:not(.dark) .data-table tbody tr[data-selected] td {
+    color: hsl(var(--background));
   }
 }
 

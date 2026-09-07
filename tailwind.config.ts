@@ -48,6 +48,11 @@ export default {
         },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
+        widget: {
+          DEFAULT: "hsl(var(--widget))",
+          foreground: "hsl(var(--widget-foreground))",
+          border: "hsl(var(--widget-border))",
+        },
         ring: "hsl(var(--ring))",
         chart: {
           "1": "hsl(var(--chart-1))",

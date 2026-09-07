@@ -58,7 +58,7 @@ export function CustomerHealthBody({ detail }: CustomerHealthBodyProps) {
         )}
       </section>
 
-      <div className="border-t border-border" role="separator" />
+      <div className="border-t border-widget-border" role="separator" />
 
       <section className="py-4" aria-labelledby="customer-health-usage">
         <h3
@@ -86,7 +86,7 @@ export function CustomerHealthBody({ detail }: CustomerHealthBodyProps) {
         )}
       </section>
 
-      <div className="border-t border-border" role="separator" />
+      <div className="border-t border-widget-border" role="separator" />
 
       <section className="pt-4" aria-labelledby="customer-health-notes">
         <h3

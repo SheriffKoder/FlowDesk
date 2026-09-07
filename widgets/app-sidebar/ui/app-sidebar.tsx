@@ -12,12 +12,13 @@
  *
  * Steps:
  * 1. Resolve active item from pathname.
- * 2. Rail: logo block (fixed height) + vertical icon list.
- * 3. Dock: horizontal scrollable icons only (no logo).
+ * 2. Rail: logo block (fixed height) + vertical icon list + logout footer.
+ * 3. Dock: horizontal icons + logout (no logo).
  */
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { LogOut, Workflow } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -52,14 +53,14 @@ function NavIcon({
   const Icon = item.icon;
   const isLarge = size === "lg";
   const className = cn(
-    "inline-flex shrink-0 items-center justify-center rounded-lg transition-colors",
+    "inline-flex shrink-0 items-center justify-center rounded-lg",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
     isLarge ? "size-11" : "size-9",
     item.disabled && "pointer-events-none opacity-40",
     !item.disabled &&
       (active
-        ? "bg-accent text-accent-foreground"
-        : "text-muted-foreground hover:bg-accent/70 hover:text-accent-foreground"),
+        ? "button-active"
+        : "text-muted-foreground transition-colors hover:bg-accent/70 hover:text-accent-foreground"),
   );
 
   if (item.disabled) {
@@ -112,6 +113,29 @@ function NavIconList({
   );
 }
 
+function LogoutButton({ size = "sm" }: { size?: "sm" | "lg" }) {
+  const isLarge = size === "lg";
+
+  return (
+    <button
+      type="button"
+      className={cn(
+        "inline-flex shrink-0 items-center justify-center rounded-lg text-destructive",
+        "transition-colors hover:bg-destructive/10",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive",
+        isLarge ? "size-11" : "size-9",
+      )}
+      aria-label="Log out"
+      title="Log out"
+      onClick={() => {
+        // Demo chrome — wire to auth when available.
+      }}
+    >
+      <LogOut className={isLarge ? "size-5" : "size-4"} aria-hidden />
+    </button>
+  );
+}
+
 /////////////////////////////////////////////////////////////
 // Sidebar
 /////////////////////////////////////////////////////////////
@@ -132,6 +156,7 @@ export function AppSidebar({ variant, className }: AppSidebarProps) {
         aria-label="Main"
       >
         <NavIconList pathname={pathname} size="lg" />
+        <LogoutButton size="lg" />
       </nav>
     );
   }
@@ -154,11 +179,11 @@ export function AppSidebar({ variant, className }: AppSidebarProps) {
       >
         <Link
           href="/customers/health"
-          className="flex size-9 items-center justify-center rounded-lg bg-primary text-sm font-semibold text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="flex size-9 items-center justify-center rounded-lg text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           aria-label="FlowDesk home"
           title="FlowDesk"
         >
-          F
+          <Workflow className="size-5" aria-hidden />
         </Link>
       </div>
 
@@ -168,6 +193,10 @@ export function AppSidebar({ variant, className }: AppSidebarProps) {
       >
         <NavIconList pathname={pathname} />
       </nav>
+
+      <div className="flex shrink-0 items-center justify-center py-4">
+        <LogoutButton />
+      </div>
     </aside>
   );
 }

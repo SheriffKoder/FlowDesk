@@ -6,17 +6,22 @@ Dumb list footer: range copy, page size, and prev/next. No router or URL knowled
 
 ```
 Pagination                          ← <nav> shell (pending dim + aria-busy)
-├── PaginationSummary               ← “Showing 1–20 of 22”
-└── PaginationControls              ← right cluster (wraps on narrow viewports)
-    ├── PaginationPageSizeSelect    ← “Rows” DropdownMenu (radio sizes)
-    └── PaginationNav               ← Previous | Page N of M | Next
+├── PaginationSummary               ← mobile “1–20 of 40” / desktop “Showing …”
+└── PaginationControls              ← right cluster
+    ├── PaginationPageSizeSelect    ← dropdown (Rows label on md+)
+    └── PaginationNav               ← mobile [<] 1/2 [>] / desktop Previous … Next
 ```
 
+**Mobile**
+
 ```
-┌─ Pagination ─────────────────────────────────────────────────────────┐
-│  PaginationSummary              PaginationControls                   │
-│  Showing 1–20 of 22             [Rows ▾]  [Previous] Page 1 of 3 [Next] │
-└──────────────────────────────────────────────────────────────────────┘
+1–20 of 40          [20 ▾]  [<] 1/2 [>]
+```
+
+**Desktop**
+
+```
+Showing 1–20 of 40   Rows [20 ▾]  [Previous] Page 1 of 2 [Next]
 ```
 
 ## Files

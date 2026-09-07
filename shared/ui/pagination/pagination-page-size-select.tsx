@@ -30,7 +30,10 @@ export function PaginationPageSizeSelect({
 }: PaginationPageSizeSelectProps) {
   return (
     <div className="flex items-center gap-2">
-      <span className="text-xs uppercase tracking-wide" id="pagination-rows-label">
+      <span
+        className="hidden text-xs uppercase tracking-wide md:inline"
+        id="pagination-rows-label"
+      >
         Rows
       </span>
       <DropdownMenu>
@@ -40,7 +43,7 @@ export function PaginationPageSizeSelect({
             variant="outline"
             size="sm"
             disabled={disabled}
-            className="h-9 min-w-[4.5rem] justify-between gap-1 px-2.5 font-normal tabular-nums"
+            className="button-secondary h-9 min-w-[3.25rem] justify-between gap-1 border-widget-border bg-widget px-2.5 font-normal tabular-nums shadow-none md:min-w-[4.5rem]"
             aria-labelledby="pagination-rows-label"
             aria-label={`Rows per page, ${pageSize}`}
           >

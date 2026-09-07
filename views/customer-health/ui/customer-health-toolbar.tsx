@@ -4,7 +4,7 @@
  * @file views/customer-health/ui/customer-health-toolbar.tsx
  *
  * Purpose: Client filter bar — search + multi-select segment buttons.
- * Used in: `CustomerListShell`.
+ * Used in: `CustomerListShell` (inside the list widget surface).
  * Used for: Debounced URL `search` and segment chip toggles with shared pending UX.
  *
  * Function Index:
@@ -35,6 +35,7 @@ const segmentFilter = customerHealthListConfig.filters[0];
 
 /**
  * List filter toolbar: search + Healthy / Watch / At risk chips.
+ * No own surface — parent widget provides background + border.
  */
 export function CustomerHealthToolbar({
   search,
@@ -44,12 +45,13 @@ export function CustomerHealthToolbar({
 }: CustomerHealthToolbarProps) {
   return (
     <div
-      className="flex shrink-0 flex-wrap items-end gap-3 rounded-md border border-border bg-muted/60 px-3 py-2"
+      className="flex shrink-0 flex-wrap items-center gap-3 px-3 py-3"
       role="search"
       aria-label="Customer list filters"
     >
       <SearchInput
         label="Search"
+        hideLabel
         placeholder={customerHealthListConfig.search.placeholder}
         value={search}
         onValueCommit={onSearchChange}
@@ -57,6 +59,7 @@ export function CustomerHealthToolbar({
       />
       <FilterOptionButtons
         label={segmentFilter.label}
+        hideLabel
         options={segmentFilter.options}
         value={segment}
         selectionMode="multi"

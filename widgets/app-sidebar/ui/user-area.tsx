@@ -3,12 +3,12 @@
 /**
  * @file widgets/app-sidebar/ui/user-area.tsx
  *
- * Purpose: Header trailing identity — avatar + name + today’s date.
+ * Purpose: Header trailing identity — avatar (+ name/date from `sm` up).
  * Used in: `AppHeader` (after actions + vertical spacer).
- * Used for: Hard-wired demo user for now; date is live.
+ * Used for: Hard-wired demo user for now; date is live; text hidden on mobile.
  *
  * Function Index:
- * - UserArea(props?) → avatar + name/date column
+ * - UserArea(props?) → avatar (+ name/date column on `sm+`)
  */
 
 import { cn } from "@/lib/utils";
@@ -56,7 +56,7 @@ export function UserArea({
       >
         {initials}
       </span>
-      <div className="min-w-0 flex flex-col">
+      <div className="hidden min-w-0 flex-col sm:flex">
         <p className="truncate text-sm font-medium leading-tight text-foreground">
           {name}
         </p>

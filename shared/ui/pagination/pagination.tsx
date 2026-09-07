@@ -32,7 +32,7 @@ export function Pagination({
       aria-label={ariaLabel}
       aria-busy={isPending || undefined}
       className={cn(
-        "flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-border pt-3 text-sm text-muted-foreground",
+        "flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-widget-border pt-3 text-sm text-muted-foreground",
         isPending && "pointer-events-none opacity-60",
         "motion-safe:transition-opacity motion-safe:duration-150 motion-reduce:transition-none",
         className,

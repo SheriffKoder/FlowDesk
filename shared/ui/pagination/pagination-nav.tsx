@@ -2,14 +2,15 @@
 
 /**
  * @file Prev / page status / Next controls.
+ * Mobile: icon chevrons + “1/2”. Desktop: Previous / Page N of M / Next.
  */
+
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
 const navButtonClassName = cn(
-  "h-9 rounded-md border border-border bg-card px-3 text-foreground",
-  "hover:bg-accent/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-  "disabled:cursor-not-allowed disabled:opacity-40",
+  "button-secondary inline-flex h-9 items-center justify-center rounded-md text-sm",
 );
 
 export type PaginationNavProps = {
@@ -27,35 +28,44 @@ export function PaginationNav({
   canNext,
   onPageChange,
 }: PaginationNavProps) {
+  const safePage = Math.min(page, totalPages);
+
   return (
     <div className="flex items-center gap-1">
       <button
         type="button"
-        className={navButtonClassName}
+        className={cn(navButtonClassName, "size-9 px-0 md:w-auto md:px-3")}
         disabled={!canPrev}
         aria-label="Previous page"
         onClick={() => {
           onPageChange(page - 1);
         }}
       >
-        Previous
+        <ChevronLeft className="size-4 md:hidden" aria-hidden />
+        <span className="hidden md:inline">Previous</span>
       </button>
       <span
-        className="min-w-[6.5rem] px-2 text-center tabular-nums"
+        className="min-w-[2.5rem] px-1.5 text-center tabular-nums md:min-w-[6.5rem] md:px-2"
         aria-live="polite"
       >
-        Page {Math.min(page, totalPages)} of {totalPages}
+        <span className="md:hidden">
+          {safePage}/{totalPages}
+        </span>
+        <span className="hidden md:inline">
+          Page {safePage} of {totalPages}
+        </span>
       </span>
       <button
         type="button"
-        className={navButtonClassName}
+        className={cn(navButtonClassName, "size-9 px-0 md:w-auto md:px-3")}
         disabled={!canNext}
         aria-label="Next page"
         onClick={() => {
           onPageChange(page + 1);
         }}
       >
-        Next
+        <ChevronRight className="size-4 md:hidden" aria-hidden />
+        <span className="hidden md:inline">Next</span>
       </button>
     </div>
   );

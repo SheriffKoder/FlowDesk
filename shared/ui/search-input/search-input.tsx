@@ -130,7 +130,7 @@ export function SearchInput({
         placeholder={placeholder}
         autoComplete="off"
         spellCheck={false}
-        className="h-9 max-w-xs bg-card"
+        className="h-9 max-w-xs focus-visible:ring-primary"
         aria-label={hideLabel ? label : undefined}
         onChange={(event) => {
           setDraft(event.target.value);

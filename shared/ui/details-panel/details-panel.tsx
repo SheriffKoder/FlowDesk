@@ -156,16 +156,16 @@ export function DetailsPanel({
       aria-labelledby={titleId}
       aria-describedby={ariaDescribedBy}
       className={cn(
-        "flex min-h-0 flex-col overflow-hidden rounded-lg border border-border bg-card",
+        "flex min-h-0 flex-col overflow-hidden rounded-lg border border-widget-border bg-widget text-widget-foreground",
         "motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-right-2 motion-safe:duration-150",
         "motion-reduce:animate-none",
         className,
       )}
     >
-      <header className="flex shrink-0 items-start justify-between gap-3 border-b border-border px-4 py-3">
+      <header className="flex shrink-0 items-center justify-between gap-3 border-b border-widget-border px-4 py-3">
         <h2
           id={titleId}
-          className="min-w-0 flex-1 text-base font-semibold leading-snug text-foreground"
+          className="min-w-0 flex-1 text-base font-semibold leading-snug text-widget-foreground"
         >
           {title}
         </h2>

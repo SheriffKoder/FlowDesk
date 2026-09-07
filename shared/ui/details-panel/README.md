@@ -26,4 +26,4 @@ DetailsPanel
 
 ## Layout note
 
-Place as a flex sibling of the list (e.g. `w-full lg:w-[28rem]`). Narrow viewports may hide the list and let the panel fill the workspace — that is a page concern, not this shell.
+Place as a flex sibling of the list widget (e.g. `w-full lg:w-[28rem]`). Uses `bg-widget` + `border-widget-border` (same tokens as the list surface). Narrow viewports may hide the list and let the panel fill the workspace — that is a page concern, not this shell.

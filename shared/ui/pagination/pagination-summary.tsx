@@ -1,7 +1,8 @@
 "use client";
 
 /**
- * @file Left-side range copy: “Showing X–Y of Z”.
+ * @file Left-side range copy.
+ * Mobile: “1–20 of 40”. Desktop: “Showing 1–20 of 40”.
  */
 
 export type PaginationSummaryProps = {
@@ -16,16 +17,27 @@ export function PaginationSummary({
   total,
 }: PaginationSummaryProps) {
   if (total <= 0) {
-    return <p className="tabular-nums">Showing 0 of 0</p>;
+    return (
+      <p className="tabular-nums">
+        <span className="md:hidden">0 of 0</span>
+        <span className="hidden md:inline">Showing 0 of 0</span>
+      </p>
+    );
   }
 
-  return (
-    <p className="tabular-nums">
-      Showing{" "}
+  const range = (
+    <>
       <span className="font-medium text-foreground">
         {start}–{end}
       </span>{" "}
       of <span className="font-medium text-foreground">{total}</span>
+    </>
+  );
+
+  return (
+    <p className="tabular-nums">
+      <span className="md:hidden">{range}</span>
+      <span className="hidden md:inline">Showing {range}</span>
     </p>
   );
 }

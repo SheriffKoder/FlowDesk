@@ -97,7 +97,7 @@ export function AppHeader({
       <div className="ml-auto flex shrink-0 items-center gap-3">
         <HeaderActions items={actions} className="ml-0" />
         <div
-          className="h-8 w-px shrink-0 bg-muted-foreground/40"
+          className="h-8 w-px shrink-0 bg-muted-foreground/20"
           aria-hidden
         />
         <UserArea />

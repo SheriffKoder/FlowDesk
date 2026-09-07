@@ -4,6 +4,7 @@
  * @file Dumb configurable data table — columns, rows, optional row activation.
  * No domain knowledge; callers own column defs and click handlers.
  * Fill a flex parent (`flex-1 min-h-0`); sticky thead, rows scroll underneath.
+ * Visual chrome lives in `app/globals.css` (`.data-table*`); no own surface/border.
  */
 
 import { cn } from "@/lib/utils";
@@ -26,7 +27,7 @@ export function DataTable<T>({
   return (
     <div
       className={cn(
-        "flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-lg border border-border bg-card",
+        "data-table-root",
         "motion-safe:transition-opacity motion-safe:duration-150 motion-reduce:transition-none",
         isPending && "pointer-events-none opacity-60",
         className,
@@ -38,21 +39,15 @@ export function DataTable<T>({
         `border-separate` keeps sticky headers reliable (collapse breaks sticky in browsers).
       */}
       <div className="custom-scrollbar min-h-0 flex-1 overflow-auto">
-        <table
-          className="w-full min-w-[40rem] table-fixed border-separate border-spacing-0 text-left text-sm"
-          aria-label={ariaLabel}
-        >
-          <thead className="sticky top-0 z-10">
+        <table className="data-table" aria-label={ariaLabel}>
+          <thead>
             <tr>
               {columns.map((column) => (
                 <th
                   key={column.id}
                   scope="col"
                   aria-sort={column.ariaSort}
-                  className={cn(
-                    "h-11 border-b border-border bg-muted px-3 text-xs font-medium uppercase tracking-wide text-muted-foreground",
-                    column.headerClassName,
-                  )}
+                  className={column.headerClassName}
                 >
                   {column.header}
                 </th>
@@ -79,13 +74,12 @@ export function DataTable<T>({
                   <tr
                     key={rowId}
                     data-selected={selected || undefined}
+                    data-interactive={interactive || undefined}
                     tabIndex={interactive ? 0 : undefined}
                     aria-selected={interactive ? selected : undefined}
                     className={cn(
-                      "h-11",
                       interactive &&
-                        "cursor-pointer hover:bg-accent/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
-                      selected && "bg-accent",
+                        "cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
                     )}
                     onClick={
                       interactive
@@ -106,13 +100,7 @@ export function DataTable<T>({
                     }
                   >
                     {columns.map((column) => (
-                      <td
-                        key={column.id}
-                        className={cn(
-                          "border-b border-border px-3 text-foreground",
-                          column.className,
-                        )}
-                      >
+                      <td key={column.id} className={column.className}>
                         {column.cell(row)}
                       </td>
                     ))}

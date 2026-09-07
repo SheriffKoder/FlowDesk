@@ -15,18 +15,18 @@ page.tsx (Server)
   └─ loadCustomerList(searchParams)
        └─ CustomerHealthPage
             └─ CustomerListShell          ← client island
-                 ├─ CustomerHealthToolbar ← full width
-                 ├─ table + details row
-                 │    ├─ CustomerTable     ← row click → open; name Open pill prefetches
-                 │    └─ CustomerDetailsPanel  ← shared DetailsPanel (in-layout)
+                 ├─ list widget (bg-widget) + details sibling
+                 │    ├─ CustomerHealthToolbar ← no own chrome
+                 │    ├─ CustomerTable         ← styles from globals `.data-table*`
+                 │    └─ CustomerDetailsPanel  ← same widget tokens
                  └─ Pagination            ← full width
 ```
 
 Page title / description render in layout `AppHeader` (`widgets/app-sidebar`) from `appPages` + `getCurrentPage` — not in the view.
 
-`CustomerTable` owns column config and list props; `shared/ui` `DataTable` stays dumb (columns, data, onRowClick, selection, `aria-sort`). Name cells render the feature `CustomerPrefetchButton` (pill Open + chevron): hover/focus warms the health cache; click opens details with `stopPropagation` so the row handler is not double-fired.
+`CustomerTable` owns column config and list props; `shared/ui` `DataTable` stays dumb (columns, data, onRowClick, selection, `aria-sort`). Visual chrome for the table lives in `app/globals.css` (`.data-table*`); the list widget surface owns background + border. Name cells render the feature `CustomerPrefetchButton` (pill Open + chevron): hover/focus warms the health cache; click opens details with `stopPropagation` so the row handler is not double-fired.
 
-Details open uses `useCustomerDrawer` (feature): local state first, then URL `customerId` mirror; selection derived from open id only. `CustomerDetailsPanel` loads health via `useCustomerHealth` (entity cache-first fetch); loading / error+retry / events·usage·notes stay panel-local. Toolbar and pagination stay outside the table/panel row. Narrow viewports hide the table and let the panel fill that middle row.
+Details open uses `useCustomerDrawer` (feature): local state first, then URL `customerId` mirror; selection derived from open id only. `CustomerDetailsPanel` loads health via `useCustomerHealth` (entity cache-first fetch); loading / error+retry / events·usage·notes stay panel-local. Toolbar + table share one widget; pagination stays below. Narrow viewports hide the list widget and let the panel fill that middle row.
 
 ## Server list (Step 5)
 

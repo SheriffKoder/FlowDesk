@@ -56,9 +56,7 @@ export function CustomerPrefetchButton({
     <button
       type="button"
       className={cn(
-        "inline-flex h-7 shrink-0 items-center gap-0.5 rounded-full border-b border-border px-2.5 text-xs font-medium text-muted-foreground",
-        "transition-colors hover:bg-accent hover:text-accent-foreground",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        "inline-flex h-7 shrink-0 items-center gap-0.5 rounded-full px-2.5 text-xs font-medium",
         disabled && "pointer-events-none opacity-50",
         className,
       )}
