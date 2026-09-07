@@ -76,9 +76,10 @@ views/
     └── lib/                       # parse/serialize list URL, page reset/clamp, resolve sort
 
 features/
-└── customer-drawer/               # details open/close + URL mirror (in-layout panel)
-    ├── ui/                        # CustomerDetailsPanel
-    ├── hooks/                     # useCustomerDrawer
+└── customer-drawer/               # details open/close + URL mirror + health body
+    ├── ui/                        # CustomerDetailsPanel, health body/error
+    ├── hooks/                     # useCustomerDrawer, useCustomerHealth
+    ├── lib/                       # health error copy
     └── model/                     # pure open/hydrate/selection helpers
 
 entities/
@@ -101,7 +102,7 @@ shared/
 │   ├── pagination/                # Pagination footer (landed)
 │   ├── search-input/              # SearchInput debounce + rehydrate (landed)
 │   ├── filter-option-buttons/     # Multi/single option button row (landed)
-│   ├── sort-button/               # Dual-arrow header sort toggle (landed)
+│   ├── sort-button/               # Dual filled-triangle header sort toggle (landed)
 │   └── details-panel/             # In-layout DetailsPanel + focus trap (landed)
 ├── lib/                           # debounce, cn, url helpers
 └── hooks/
@@ -127,7 +128,7 @@ Only `index.ts` is public per slice. No deep imports across features/entities.
 
 | Path | Contains |
 |---|---|
-| `tests/unit/` | Pure rules: URL contract (**landed**), schemas/transforms, drawer state (**landed**), health cache |
+| `tests/unit/` | Pure rules: URL contract (**landed**), schemas/transforms, drawer state (**landed**), health cache (**landed**) |
 | `tests/integration/` | Boundary tests: list API, health API, searchParams → list props wiring |
 | `tests/fixtures/` | Shared customer/health fixtures reused by API + tests |
 

@@ -3,38 +3,53 @@
 /**
  * @file features/customer-drawer/ui/customer-details-panel.tsx
  *
- * Purpose: Customer details chrome wrapping shared `DetailsPanel`.
+ * Purpose: Customer details chrome + health body (loading / error / sections).
  * Used in: Customer Health list shell (beside the table).
- * Used for: Title + close; body placeholder until health fetch (Step 11).
+ * Used for: Title + close; fetch health by open customer id (Step 11).
  *
  * Function Index:
- * - CustomerDetailsPanel(props) → in-layout DetailsPanel
+ * - CustomerDetailsPanel(props) → in-layout DetailsPanel + health states
+ *
+ * Steps:
+ * 1. Drive `useCustomerHealth` from open + customerId (no fetch when closed).
+ * 2. Render loading, error+retry, or sectioned body — never throw to route.
  */
-
-import type { ReactNode } from "react";
 
 import { DetailsPanel } from "@/shared/ui";
 
+import { useCustomerHealth } from "../hooks/use-customer-health";
+import { CustomerHealthBody } from "./customer-health-body";
+import { CustomerHealthBodySkeleton } from "./customer-health-body-skeleton";
+import { CustomerHealthError } from "./customer-health-error";
+
 export type CustomerDetailsPanelProps = {
   open: boolean;
+  /** Selected customer id while open (null when closed). */
+  customerId: string | null;
   /** Display title (usually customer name; falls back in the shell). */
   title: string;
   onClose: () => void;
-  /** Optional body — health sections land in Step 11. */
-  children?: ReactNode;
   className?: string;
 };
 
 /**
- * Feature-level details panel: shared shell + customer workflow copy defaults.
+ * Feature-level details panel: shared shell + health fetch states.
  */
 export function CustomerDetailsPanel({
   open,
+  customerId,
   title,
   onClose,
-  children,
   className,
 }: CustomerDetailsPanelProps) {
+  //////////////////////////////////
+  // 1. Fetch only while the panel is open with an id.
+  const health = useCustomerHealth({
+    customerId,
+    enabled: open && customerId != null,
+  });
+  //////////////////////////////////
+
   return (
     <DetailsPanel
       open={open}
@@ -42,11 +57,21 @@ export function CustomerDetailsPanel({
       onClose={onClose}
       className={className}
     >
-      {children ?? (
-        <p className="text-sm text-muted-foreground">
-          Loading health details…
-        </p>
-      )}
+      {health.status === "loading" || health.status === "idle" ? (
+        <CustomerHealthBodySkeleton />
+      ) : null}
+
+      {health.status === "error" ? (
+        <CustomerHealthError
+          kind={health.errorKind}
+          message={health.errorMessage}
+          onRetry={health.retry}
+        />
+      ) : null}
+
+      {health.status === "success" && health.data ? (
+        <CustomerHealthBody detail={health.data} />
+      ) : null}
     </DetailsPanel>
   );
 }

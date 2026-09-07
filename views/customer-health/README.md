@@ -25,7 +25,7 @@ page.tsx (Server)
 
 `CustomerTable` owns column config and list props; `shared/ui` `DataTable` stays dumb (columns, data, onRowClick, selection, `aria-sort`).
 
-Details open uses `useCustomerDrawer` (feature): local state first, then URL `customerId` mirror; selection derived from open id only. Toolbar and pagination stay outside the table/panel row. Narrow viewports hide the table and let the panel fill that middle row.
+Details open uses `useCustomerDrawer` (feature): local state first, then URL `customerId` mirror; selection derived from open id only. `CustomerDetailsPanel` loads health via `useCustomerHealth` (entity cache-first fetch); loading / error+retry / events·usage·notes stay panel-local. Toolbar and pagination stay outside the table/panel row. Narrow viewports hide the table and let the panel fill that middle row.
 
 ## Server list (Step 5)
 

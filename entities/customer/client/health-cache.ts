@@ -1,9 +1,19 @@
 /**
  * @file entities/customer/client/health-cache.ts
  *
- * Purpose: Stub in-memory health cache (filled in drawer tickets).
- * Used in: future drawer host / prefetch button.
- * Used for: Reserve the client/ cache API without wiring fetch yet.
+ * Purpose: Tab-local in-memory cache for customer health payloads.
+ * Used in: `fetch-customer-health`, drawer hook, prefetch (Step 12).
+ * Used for: Warm reopen without a second spinner; shared write path for prefetch.
+ *
+ * Function Index:
+ * - getCachedCustomerHealth(id) → detail | undefined
+ * - setCachedCustomerHealth(id, detail) → void
+ * - hasCachedCustomerHealth(id) → boolean
+ * - clearCustomerHealthCache() → void
+ *
+ * Notes:
+ * - Module `Map` (ADR-004 / ADR-006) — no TanStack this phase.
+ * - Cache lives for the browser tab only; refresh clears it.
  */
 
 import type { CustomerHealthDetail } from "../model/customer";
@@ -20,6 +30,15 @@ export function getCachedCustomerHealth(
   customerId: string,
 ): CustomerHealthDetail | undefined {
   return healthCache.get(customerId);
+}
+
+/**
+ * Whether the tab cache already holds this customer’s health payload.
+ *
+ * @param customerId - Customer id
+ */
+export function hasCachedCustomerHealth(customerId: string): boolean {
+  return healthCache.has(customerId);
 }
 
 /**

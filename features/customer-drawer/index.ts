@@ -2,7 +2,7 @@
  * @file Public exports for the customer-drawer feature.
  *
  * Workflow: open customer details beside the list (in-layout panel),
- * mirror `customerId` in the URL, hydrate from deep links.
+ * mirror `customerId` in the URL, hydrate from deep links, load health.
  */
 
 export {
@@ -10,6 +10,13 @@ export {
   type UseCustomerDrawerOptions,
   type UseCustomerDrawerResult,
 } from "./hooks/use-customer-drawer";
+
+export {
+  useCustomerHealth,
+  type CustomerHealthStatus,
+  type UseCustomerHealthOptions,
+  type UseCustomerHealthResult,
+} from "./hooks/use-customer-health";
 
 export {
   CLOSED_CUSTOMER_DRAWER,
@@ -24,3 +31,15 @@ export {
   CustomerDetailsPanel,
   type CustomerDetailsPanelProps,
 } from "./ui/customer-details-panel";
+
+export {
+  CustomerHealthBody,
+  type CustomerHealthBodyProps,
+} from "./ui/customer-health-body";
+
+export { CustomerHealthBodySkeleton } from "./ui/customer-health-body-skeleton";
+
+export {
+  CustomerHealthError,
+  type CustomerHealthErrorProps,
+} from "./ui/customer-health-error";

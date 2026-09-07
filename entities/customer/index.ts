@@ -101,11 +101,21 @@ export {
 } from "./errors/customer-errors";
 
 /////////////////////////////////////////////////////////////
-// Client cache stub
+// Client — health fetch + tab cache
 /////////////////////////////////////////////////////////////
 
 export {
   clearCustomerHealthCache,
   getCachedCustomerHealth,
+  hasCachedCustomerHealth,
   setCachedCustomerHealth,
 } from "./client/health-cache";
+export {
+  fetchCustomerHealth,
+  type FetchCustomerHealthOptions,
+} from "./client/fetch-customer-health";
+export {
+  CustomerHealthFetchError,
+  isCustomerHealthFetchError,
+  type CustomerHealthFetchErrorKind,
+} from "./client/customer-health-fetch-error";

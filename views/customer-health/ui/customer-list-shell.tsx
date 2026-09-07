@@ -92,6 +92,7 @@ export function CustomerListShell({ list }: CustomerListShellProps) {
 
         <CustomerDetailsPanel
           open={drawer.open}
+          customerId={drawer.customerId}
           title={detailsTitle}
           onClose={drawer.close}
           className={cn(

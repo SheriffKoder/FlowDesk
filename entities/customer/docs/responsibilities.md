@@ -6,7 +6,7 @@ Skim map of `entities/customer` by folder. Import only via the public `index.ts`
 
 | File | Role |
 | --- | --- |
-| `index.ts` | Public API — re-exports model, schema, transform, queries, errors, client cache |
+| `index.ts` | Public API — re-exports model, schema, transform, queries, errors, client fetch/cache |
 | `README.md` | Unit overview: owns / does not own |
 
 ## `model/` — domain shapes
@@ -53,11 +53,13 @@ Skim map of `entities/customer` by folder. Import only via the public `index.ts`
 | --- | --- |
 | `customer-errors.ts` | `CustomerError` family + `isCustomerError` for API status mapping |
 
-## `client/` — browser-side cache (stub)
+## `client/` — browser health fetch + tab cache
 
 | File | Role |
 | --- | --- |
-| `health-cache.ts` | In-memory Map API for drawer cache (wired in later tickets) |
+| `health-cache.ts` | In-memory Map API (`get` / `set` / `has` / `clear`) for drawer + prefetch |
+| `customer-health-fetch-error.ts` | Client error kinds: offline / not_found / network / server / … |
+| `fetch-customer-health.ts` | Cache-first GET `/api/customers/{id}/health`; Zod validate; write-through |
 
 ## Call path (list)
 
@@ -75,4 +77,13 @@ GET /api/customers/[id]/health
   → queries/get-customer-health
   → repository/get-customer-health
   → transform + schema + fixtures
+```
+
+## Call path (health — browser)
+
+```text
+CustomerDetailsPanel / prefetch
+  → fetchCustomerHealth (cache-first)
+  → GET /api/customers/[id]/health
+  → setCachedCustomerHealth
 ```
