@@ -37,7 +37,7 @@ export async function GET(request: Request) {
     // 2. Run entity use-case.
     const result = listCustomers({
       search: params.search,
-      segment: params.segment,
+      segments: params.segment,
       page: params.page,
       pageSize: params.pageSize,
       sort,

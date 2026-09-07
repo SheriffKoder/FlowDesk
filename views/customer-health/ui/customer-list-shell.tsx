@@ -13,8 +13,8 @@
  *
  * Steps:
  * 1. Derive `isPending` / `patchParams` from current parsed URL params.
- * 2. Render search toolbar, dimmable table, and pagination footer.
- * 3. Search / page / page_size → `patchParams` → soft-nav `{ scroll: false }`.
+ * 2. Render search + segment toolbar, dimmable table, and pagination footer.
+ * 3. Search / segment / page / page_size → `patchParams` → soft-nav `{ scroll: false }`.
  */
 
 import { Pagination } from "@/shared/ui";
@@ -42,6 +42,10 @@ export function CustomerListShell({ list }: CustomerListShellProps) {
         search={list.params.search}
         onSearchChange={(search) => {
           patchParams({ search });
+        }}
+        segment={list.params.segment}
+        onSegmentChange={(segment) => {
+          patchParams({ segment });
         }}
       />
       <CustomerTable

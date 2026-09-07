@@ -10,3 +10,9 @@ export type { PaginationProps, PaginationRange } from "./pagination";
 
 export { SearchInput } from "./search-input";
 export type { SearchInputProps } from "./search-input";
+
+export { FilterOptionButtons } from "./filter-option-buttons";
+export type {
+  FilterOption,
+  FilterOptionButtonsProps,
+} from "./filter-option-buttons";

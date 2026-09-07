@@ -98,7 +98,8 @@ shared/
 ├── ui/
 │   ├── table/                     # DataTable (landed)
 │   ├── pagination/                # Pagination footer (landed)
-│   └── search-input/              # SearchInput debounce + rehydrate (landed)
+│   ├── search-input/              # SearchInput debounce + rehydrate (landed)
+│   └── filter-option-buttons/     # Multi/single option button row (landed)
 ├── lib/                           # debounce, cn, url helpers
 └── hooks/
 ```
@@ -111,7 +112,7 @@ shared/
 | `page-header` | Title + supporting paragraph | View-local for now; move to shared later |
 | `pagination-*` | Footer, page size, navigation | Landed |
 | Search input | Param label, placeholder, debounce | Landed |
-| Filter control | Button + dropdown; column/label/options | Expected |
+| Filter control | Multi-select option button row (`FilterOptionButtons`) | Landed |
 | Sort control | Header-cell island; URL sort/order | Expected |
 | Panel / drawer shell | Children slot; a11y focus trap | Expected |
 

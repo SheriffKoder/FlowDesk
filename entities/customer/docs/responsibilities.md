@@ -13,7 +13,7 @@ Skim map of `entities/customer` by folder. Import only via the public `index.ts`
 
 | File | Role |
 | --- | --- |
-| `segment.ts` | Canonical segment enum (`healthy` / `watch` / `at_risk`) + `CustomerSegment` |
+| `segment.ts` | Canonical segment enum + labels / `CUSTOMER_SEGMENT_OPTIONS` for filter chips |
 | `customer.ts` | Domain types: list row, health detail, events, usage points |
 | `customer-list-query.ts` | List use-case input/output + sort field/order constants |
 

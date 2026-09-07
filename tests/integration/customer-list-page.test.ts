@@ -56,8 +56,20 @@ describe("loadCustomerList — filters", () => {
 
     expect(list.total).toBeGreaterThan(0);
     expect(list.rows.every((row) => row.segment === "watch")).toBe(true);
-    expect(list.params.segment).toBe("watch");
+    expect(list.params.segment).toEqual(["watch"]);
     expect(list.emptyKind).toBeNull();
+  });
+
+  it("filters by multi-select segments (OR)", () => {
+    const list = loadCustomerList({ segment: "watch,at_risk" });
+
+    expect(list.total).toBeGreaterThan(0);
+    expect(
+      list.rows.every(
+        (row) => row.segment === "watch" || row.segment === "at_risk",
+      ),
+    ).toBe(true);
+    expect(list.params.segment).toEqual(["watch", "at_risk"]);
   });
 
   it("searches by name from searchParams", () => {

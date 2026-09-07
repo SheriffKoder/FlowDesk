@@ -11,7 +11,7 @@ Root `app/layout.tsx` is enough for now — **no nested `/customers` layout** un
 | Param | Role | Notes |
 |---|---|---|
 | `search` | Name/domain search | Debounced from the search input; rehydrate local input from URL on back/forward |
-| `segment` | `healthy` \| `watch` \| `at_risk` (final enum in schema) | Segment filter; invalid → default/fallback |
+| `segment` | comma-joined `healthy` / `watch` / `at_risk` (multi-select OR); empty = all | Invalid tokens dropped; empty → no filter |
 | `page` | 1-based page index | Reset to `1` when search/segment/sort/page_size change; **clamp** when total pages shrink |
 | `page_size` | Page size (`10` \| `20` \| `50`; default `20`) | Shared pagination control |
 | `sort` | Column key (`name` \| `mrr` \| `last_active` \| `health` \| `owner`) | From sort system. **Absent** → resolve default health (risk-first) then name in parse/query (URL need not include sort on first land) |

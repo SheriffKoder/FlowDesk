@@ -34,6 +34,8 @@ export {
   LIST_SORT_ORDERS,
   LIST_URL_PARAM_KEYS,
   PAGE_RESET_FIELDS,
+  canonicalizeSegments,
+  segmentsEqual,
   type CustomerHealthUrlParams,
   type CustomerSegment,
   type DefaultListSort,

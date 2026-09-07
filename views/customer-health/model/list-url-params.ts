@@ -12,6 +12,7 @@
  * - CUSTOMER_SEGMENTS / LIST_SORT_KEYS / LIST_SORT_ORDERS / LIST_PAGE_SIZES
  * - DEFAULT_LIST_* / DEFAULT_LIST_SORT / DEFAULT_CUSTOMER_HEALTH_URL_PARAMS
  * - PAGE_RESET_FIELDS — fields that force page → 1
+ * - canonicalizeSegments / segmentsEqual
  * - CustomerHealthUrlParams / ResolvedListSort — parsed + query-ready shapes
  *
  * Steps:
@@ -19,6 +20,13 @@
  * 2. Lock allow-lists (segment, sort, order, page sizes) and defaults.
  * 3. Export typed URL state + default sort plan for resolveListSort.
  */
+
+import {
+  CUSTOMER_SEGMENTS,
+  type CustomerSegment,
+} from "@/entities/customer";
+
+export { CUSTOMER_SEGMENTS, type CustomerSegment };
 
 /////////////////////////////////////////////////////////////
 // Query key names — never hard-code these strings outside this file.
@@ -41,11 +49,6 @@ export type ListUrlParamKey =
 /////////////////////////////////////////////////////////////
 // Allow-lists — invalid URL values coerce to defaults / null in parse.
 /////////////////////////////////////////////////////////////
-
-/** Health segment filter values. */
-export const CUSTOMER_SEGMENTS = ["healthy", "watch", "at_risk"] as const;
-
-export type CustomerSegment = (typeof CUSTOMER_SEGMENTS)[number];
 
 /**
  * Sortable column keys written to the URL `sort` param.
@@ -107,8 +110,11 @@ export type ResolvedListSort = DefaultListSort | ExplicitListSort;
  */
 export type CustomerHealthUrlParams = {
   search: string;
-  /** `null` = all segments (no filter). */
-  segment: CustomerSegment | null;
+  /**
+   * Multi-select segment filter (OR).
+   * Empty array = all segments (no filter). Serialized as comma-joined `segment`.
+   */
+  segment: CustomerSegment[];
   page: number;
   pageSize: ListPageSize;
   sort: ListSortKey | null;
@@ -119,7 +125,7 @@ export type CustomerHealthUrlParams = {
 
 export const DEFAULT_CUSTOMER_HEALTH_URL_PARAMS: CustomerHealthUrlParams = {
   search: "",
-  segment: null,
+  segment: [],
   page: DEFAULT_LIST_PAGE,
   pageSize: DEFAULT_LIST_PAGE_SIZE,
   sort: null,
@@ -141,3 +147,26 @@ export const PAGE_RESET_FIELDS = [
 ] as const satisfies ReadonlyArray<keyof CustomerHealthUrlParams>;
 
 export type PageResetField = (typeof PAGE_RESET_FIELDS)[number];
+
+/**
+ * Stable segment order matching {@link CUSTOMER_SEGMENTS}; drops unknowns.
+ */
+export function canonicalizeSegments(
+  segments: readonly string[],
+): CustomerSegment[] {
+  const selected = new Set(segments);
+  return CUSTOMER_SEGMENTS.filter((segment) => selected.has(segment));
+}
+
+/**
+ * Compare two segment selections (order-sensitive after canonicalize).
+ */
+export function segmentsEqual(
+  a: readonly CustomerSegment[],
+  b: readonly CustomerSegment[],
+): boolean {
+  if (a.length !== b.length) {
+    return false;
+  }
+  return a.every((segment, index) => segment === b[index]);
+}

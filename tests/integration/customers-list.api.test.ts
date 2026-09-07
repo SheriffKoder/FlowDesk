@@ -79,6 +79,19 @@ describe("GET /api/customers — filters", () => {
     expect(body.data.every((row) => row.segment === "at_risk")).toBe(true);
   });
 
+  it("filters by multi-select segments (OR)", async () => {
+    // Comma-joined segment=watch,at_risk matches either value.
+    const response = await getCustomers("segment=watch,at_risk");
+    const body = customerListResponseSchema.parse(await response.json());
+
+    expect(body.total).toBeGreaterThan(0);
+    expect(
+      body.data.every(
+        (row) => row.segment === "watch" || row.segment === "at_risk",
+      ),
+    ).toBe(true);
+  });
+
   it("searches by name or domain", async () => {
     // Search matches name OR domain (case-insensitive contains).
     const byName = customerListResponseSchema.parse(

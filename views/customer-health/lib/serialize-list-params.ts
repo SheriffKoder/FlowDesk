@@ -12,7 +12,7 @@
  *
  * @example
  * serializeListParamsToString(DEFAULT_CUSTOMER_HEALTH_URL_PARAMS) // → ""
- * serializeListParamsToString({ ...defaults, segment: "watch", page: 2 })
+ * serializeListParamsToString({ ...defaults, segment: ["watch"], page: 2 })
  * // → "segment=watch&page=2"
  *
  * Steps:
@@ -42,7 +42,7 @@ export type SerializeListParamsOptions = {
 /**
  * Build `URLSearchParams` from typed list state.
  *
- * Omits empty search, null segment/customerId, default page/size (unless
+ * Omits empty search, empty segment/customerId, default page/size (unless
  * `includeDefaults`), and absent sort/order so first land stays triage-default
  * without writing sort into the URL.
  *
@@ -69,8 +69,11 @@ export function serializeListParams(
     searchParams.set(LIST_URL_PARAM_KEYS.search, params.search);
   }
 
-  if (params.segment !== null) {
-    searchParams.set(LIST_URL_PARAM_KEYS.segment, params.segment);
+  if (params.segment.length > 0) {
+    searchParams.set(
+      LIST_URL_PARAM_KEYS.segment,
+      params.segment.join(","),
+    );
   }
   //////////////////////////////////
 

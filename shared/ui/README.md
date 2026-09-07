@@ -8,7 +8,7 @@ Cross-domain presentational primitives (no business logic).
 | `page-header` | Title + supporting paragraph *(later)* |
 | `Pagination` (`pagination/`) | Footer, page size DropdownMenu, prev/next |
 | `SearchInput` (`search-input/`) | Label, placeholder, debounce + URL rehydrate |
-| Filter control | Button + dropdown *(later)* |
+| `FilterOptionButtons` (`filter-option-buttons/`) | Config-driven multi/single toggle button row |
 | Sort control | Header-cell island *(later)* |
 | Panel / drawer shell | Children slot; a11y focus trap *(later)* |
 

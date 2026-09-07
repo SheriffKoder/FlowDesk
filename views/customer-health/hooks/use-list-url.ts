@@ -4,7 +4,7 @@
  * @file views/customer-health/hooks/use-list-url.ts
  *
  * Purpose: Client list URL updates with pending transition (scroll: false).
- * Used in: `CustomerListShell` (search + pagination; segment/sort later).
+ * Used in: `CustomerListShell` (search + segment + pagination; sort later).
  * Used for: Shareable query changes without jump-to-top; dim table via delayed
  *   `isPending` so fast/cached soft-nav does not flicker opacity.
  *

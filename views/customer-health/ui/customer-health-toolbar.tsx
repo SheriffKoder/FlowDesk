@@ -3,33 +3,42 @@
 /**
  * @file views/customer-health/ui/customer-health-toolbar.tsx
  *
- * Purpose: Client filter bar — search (segment lands in Step 8).
+ * Purpose: Client filter bar — search + multi-select segment buttons.
  * Used in: `CustomerListShell`.
- * Used for: Debounced URL `search` with shared pending UX owned by the shell.
+ * Used for: Debounced URL `search` and segment chip toggles with shared pending UX.
  *
  * Function Index:
- * - CustomerHealthToolbar({ search, onSearchChange }) → filter row
+ * - CustomerHealthToolbar(props) → filter row
  *
  * Steps:
- * 1. Render shared SearchInput bound to URL-committed `search`.
- * 2. Commit → parent `patchParams({ search })` (page reset + scroll:false).
+ * 1. SearchInput → URL `search` (page reset via patch).
+ * 2. FilterOptionButtons → URL `segment` multi-select (OR filter).
  */
 
-import { SearchInput } from "@/shared/ui";
+import { CUSTOMER_SEGMENT_OPTIONS } from "@/entities/customer";
+import { FilterOptionButtons, SearchInput } from "@/shared/ui";
+
+import type { CustomerSegment } from "../model/list-url-params";
 
 export type CustomerHealthToolbarProps = {
   /** Committed search from URL (`list.params.search`). */
   search: string;
   /** Debounced / Enter commit from SearchInput. */
   onSearchChange: (search: string) => void;
+  /** Selected segments from URL (empty = all). */
+  segment: readonly CustomerSegment[];
+  /** Multi-select commit from FilterOptionButtons. */
+  onSegmentChange: (segment: CustomerSegment[]) => void;
 };
 
 /**
- * List filter toolbar. Segment control stays a placeholder until Step 8.
+ * List filter toolbar: search + Healthy / Watch / At risk chips.
  */
 export function CustomerHealthToolbar({
   search,
   onSearchChange,
+  segment,
+  onSegmentChange,
 }: CustomerHealthToolbarProps) {
   return (
     <div
@@ -44,12 +53,15 @@ export function CustomerHealthToolbar({
         onValueCommit={onSearchChange}
         className="min-w-[12rem] flex-1"
       />
-      <div
-        className="h-9 min-w-[8.5rem] rounded-md border border-border bg-card px-3 text-sm leading-9 text-muted-foreground"
-        aria-hidden
-      >
-        Segment
-      </div>
+      <FilterOptionButtons
+        label="Segment"
+        options={CUSTOMER_SEGMENT_OPTIONS}
+        value={segment}
+        selectionMode="multi"
+        onChange={(next) => {
+          onSegmentChange(next as CustomerSegment[]);
+        }}
+      />
     </div>
   );
 }

@@ -35,7 +35,10 @@ export type CustomerListSort =
 
 export type ListCustomersInput = {
   search: string;
-  segment: CustomerSegment | null;
+  /**
+   * Selected segments (OR). Empty array = all segments (no filter).
+   */
+  segments: CustomerSegment[];
   page: number;
   pageSize: number;
   sort: CustomerListSort;

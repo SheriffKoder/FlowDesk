@@ -7,28 +7,28 @@
  *   the list (ADR-002 / routing contract).
  *
  * Function Index:
- * - firstValue — read a single string from URLSearchParams or a record
- * - parseSegment / parsePage / parsePageSize / parseSort / parseOrder / parseCustomerId
+ * - firstValue / allValues — read query keys from URLSearchParams or a record
+ * - parseSegments / parsePage / parsePageSize / parseSort / parseOrder / parseCustomerId
  * - parseListParams(raw) → CustomerHealthUrlParams
  *
  * @example
- * parseListParams(new URLSearchParams("segment=at_risk&page=2"))
- * // → { search: "", segment: "at_risk", page: 2, pageSize: 20, sort: null, ... }
+ * parseListParams(new URLSearchParams("segment=at_risk,watch&page=2"))
+ * // → { search: "", segment: ["watch", "at_risk"], page: 2, ... } (canonical order)
  *
  * Steps:
- * 1. Read each known key via firstValue (supports arrays from Next searchParams).
- * 2. Coerce each field with a dedicated parser (invalid → default / null).
+ * 1. Read each known key (segment collects all tokens / comma lists).
+ * 2. Coerce each field with a dedicated parser (invalid → default / empty).
  * 3. Drop orphan `order` when sort is missing; assemble CustomerHealthUrlParams.
  */
 
 import {
-  CUSTOMER_SEGMENTS,
   DEFAULT_CUSTOMER_HEALTH_URL_PARAMS,
   DEFAULT_LIST_PAGE,
   LIST_PAGE_SIZES,
   LIST_SORT_KEYS,
   LIST_SORT_ORDERS,
   LIST_URL_PARAM_KEYS,
+  canonicalizeSegments,
   type CustomerHealthUrlParams,
   type CustomerSegment,
   type ListPageSize,
@@ -42,7 +42,7 @@ import {
 
 /**
  * Next.js App Router `searchParams` bag or a browser `URLSearchParams`.
- * Arrays appear when the same key is repeated; we always take the first value.
+ * Arrays appear when the same key is repeated.
  */
 export type RawSearchParams =
   | URLSearchParams
@@ -63,13 +63,11 @@ function firstValue(
   raw: RawSearchParams,
   key: string,
 ): string | undefined {
-  // URLSearchParams path (tests + serialize round-trips).
   if (raw instanceof URLSearchParams) {
     const value = raw.get(key);
     return value === null ? undefined : value;
   }
 
-  // Next.js record path — take index 0 when the framework passes string[].
   const value = raw[key];
   if (Array.isArray(value)) {
     return value[0];
@@ -78,25 +76,41 @@ function firstValue(
 }
 
 /**
- * Parse segment filter; unknown values become “all” (null).
- *
- * @param value - Raw `segment` query value
- * @returns Known CustomerSegment or null
+ * Read all string values for a query key (repeated keys + record arrays).
  */
-function parseSegment(value: string | undefined): CustomerSegment | null {
-  if (value === undefined || value === "") {
-    return null;
+function allValues(raw: RawSearchParams, key: string): string[] {
+  if (raw instanceof URLSearchParams) {
+    return raw.getAll(key);
   }
-  return (CUSTOMER_SEGMENTS as readonly string[]).includes(value)
-    ? (value as CustomerSegment)
-    : null;
+
+  const value = raw[key];
+  if (value === undefined) {
+    return [];
+  }
+  if (Array.isArray(value)) {
+    return value;
+  }
+  return [value];
+}
+
+/**
+ * Parse multi-select segment filter.
+ * Accepts `segment=watch`, `segment=watch,healthy`, and repeated keys.
+ * Unknown tokens dropped; empty → all segments.
+ */
+function parseSegments(raw: RawSearchParams): CustomerSegment[] {
+  const tokens = allValues(raw, LIST_URL_PARAM_KEYS.segment).flatMap((entry) =>
+    entry
+      .split(",")
+      .map((part) => part.trim())
+      .filter((part) => part.length > 0),
+  );
+
+  return canonicalizeSegments(tokens);
 }
 
 /**
  * Parse 1-based page; non-numeric or &lt; 1 → default page.
- *
- * @param value - Raw `page` query value
- * @returns Safe page index (≥ 1)
  */
 function parsePage(value: string | undefined): number {
   if (value === undefined || value === "") {
@@ -111,9 +125,6 @@ function parsePage(value: string | undefined): number {
 
 /**
  * Parse page size against the allow-list; anything else → default size.
- *
- * @param value - Raw `page_size` query value
- * @returns Allowed ListPageSize
  */
 function parsePageSize(value: string | undefined): ListPageSize {
   if (value === undefined || value === "") {
@@ -128,9 +139,6 @@ function parsePageSize(value: string | undefined): ListPageSize {
 
 /**
  * Parse sort column key; unknown / empty → null (use resolveListSort later).
- *
- * @param value - Raw `sort` query value
- * @returns Known ListSortKey or null
  */
 function parseSort(value: string | undefined): ListSortKey | null {
   if (value === undefined || value === "") {
@@ -143,9 +151,6 @@ function parseSort(value: string | undefined): ListSortKey | null {
 
 /**
  * Parse sort direction; unknown / empty → null.
- *
- * @param value - Raw `order` query value
- * @returns `asc` | `desc` or null
  */
 function parseOrder(value: string | undefined): ListSortOrder | null {
   if (value === undefined || value === "") {
@@ -158,9 +163,6 @@ function parseOrder(value: string | undefined): ListSortOrder | null {
 
 /**
  * Parse drawer customer id; blank / whitespace → null (drawer closed).
- *
- * @param value - Raw `customerId` query value
- * @returns Trimmed id or null
  */
 function parseCustomerId(value: string | undefined): string | null {
   if (value === undefined) {
@@ -182,12 +184,6 @@ function parseCustomerId(value: string | undefined): string | null {
  *
  * @param raw - Next.js searchParams object or URLSearchParams
  * @returns Typed list + drawer URL state (never throws)
- *
- * @example
- * ```ts
- * parseListParams({ segment: "nope", page: "0" })
- * // → DEFAULT_CUSTOMER_HEALTH_URL_PARAMS
- * ```
  */
 export function parseListParams(raw: RawSearchParams): CustomerHealthUrlParams {
   //////////////////////////////////
@@ -195,7 +191,6 @@ export function parseListParams(raw: RawSearchParams): CustomerHealthUrlParams {
   const sort = parseSort(firstValue(raw, LIST_URL_PARAM_KEYS.sort));
   let order = parseOrder(firstValue(raw, LIST_URL_PARAM_KEYS.order));
 
-  // Order without a valid sort is meaningless — drop it.
   if (sort === null) {
     order = null;
   }
@@ -205,7 +200,7 @@ export function parseListParams(raw: RawSearchParams): CustomerHealthUrlParams {
   // 2. Coerce remaining fields independently; each parser owns its fallback.
   return {
     search: (firstValue(raw, LIST_URL_PARAM_KEYS.search) ?? "").trim(),
-    segment: parseSegment(firstValue(raw, LIST_URL_PARAM_KEYS.segment)),
+    segment: parseSegments(raw),
     page: parsePage(firstValue(raw, LIST_URL_PARAM_KEYS.page)),
     pageSize: parsePageSize(firstValue(raw, LIST_URL_PARAM_KEYS.pageSize)),
     sort,

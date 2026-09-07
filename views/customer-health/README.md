@@ -14,7 +14,7 @@ page.tsx (Server)
        └─ CustomerHealthPage
             ├─ PageHeader                 ← server (view-local for now)
             ├─ CustomerListShell          ← client island
-            │    ├─ CustomerHealthToolbar ← SearchInput → URL `search`
+            │                     ├─ CustomerHealthToolbar ← SearchInput + segment FilterOptionButtons
             │    ├─ CustomerTable         ← view wiring → shared DataTable
             │    └─ Pagination            ← page / page_size
             └─ CustomerDrawerHost         ← client island (viewport-edge slot)
@@ -22,7 +22,7 @@ page.tsx (Server)
 
 `CustomerTable` owns column config and list props; `shared/ui` `DataTable` stays dumb (columns, data, onRowClick, selection).
 
-Search uses shared `SearchInput` (debounce + rehydrate from URL). `applyListParamsPatch` resets `page` → 1; filtered empty copy when nothing matches.
+Search uses shared `SearchInput` (debounce + rehydrate from URL). Segment uses shared `FilterOptionButtons` (multi-select chips → comma-joined `segment`). `applyListParamsPatch` resets `page` → 1; filtered empty copy when nothing matches.
 ## Server list (Step 5)
 
 [`server/load-customer-list.ts`](./server/load-customer-list.ts) maps `searchParams` → entity `listCustomers` → table props. Fixtures stay behind the entity repository (no view import of seed data; no self-HTTP).

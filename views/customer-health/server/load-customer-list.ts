@@ -70,7 +70,7 @@ function resolveEmptyKind(
   }
 
   const hasFilters =
-    params.search.trim().length > 0 || params.segment !== null;
+    params.search.trim().length > 0 || params.segment.length > 0;
 
   return hasFilters ? "filtered" : "true";
 }
@@ -111,7 +111,7 @@ export function loadCustomerList(
   // 3. Entity list use-case (filter / sort / paginate / clamp).
   const result = listCustomers({
     search: params.search,
-    segment: params.segment,
+    segments: params.segment,
     page: params.page,
     pageSize: params.pageSize,
     sort,

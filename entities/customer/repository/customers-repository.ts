@@ -133,7 +133,10 @@ export function queryCustomerList(
     if (!matchesSearch(item, input.search)) {
       return false;
     }
-    if (input.segment !== null && item.segment !== input.segment) {
+    if (
+      input.segments.length > 0 &&
+      !input.segments.includes(item.segment)
+    ) {
       return false;
     }
     return true;

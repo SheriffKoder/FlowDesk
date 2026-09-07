@@ -10,15 +10,8 @@
  * - fieldChanged — private equality check for a page-reset field
  * - applyListParamsPatch(current, patch) → next CustomerHealthUrlParams
  *
- * @example
- * applyListParamsPatch(
- *   { ...defaults, page: 5, search: "a" },
- *   { search: "b" },
- * )
- * // → page forced to 1
- *
  * Steps:
- * 1. Shallow-merge current params with the patch.
+ * 1. Shallow-merge current params with the patch (canonicalize segments).
  * 2. Detect whether any PAGE_RESET_FIELDS value changed.
  * 3. If so, force page back to 1; otherwise keep the requested page.
  */
@@ -26,6 +19,8 @@
 import {
   DEFAULT_LIST_PAGE,
   PAGE_RESET_FIELDS,
+  canonicalizeSegments,
+  segmentsEqual,
   type CustomerHealthUrlParams,
   type PageResetField,
 } from "../model/list-url-params";
@@ -42,17 +37,15 @@ export type ListParamsPatch = Partial<
 
 /**
  * Return whether a page-reset field differs between current and next state.
- *
- * @param current - Params before the patch
- * @param next - Params after the shallow merge
- * @param field - One of search | segment | pageSize | sort | order
- * @returns True when that field’s value changed
  */
 function fieldChanged(
   current: CustomerHealthUrlParams,
   next: CustomerHealthUrlParams,
   field: PageResetField,
 ): boolean {
+  if (field === "segment") {
+    return !segmentsEqual(current.segment, next.segment);
+  }
   return current[field] !== next[field];
 }
 
@@ -61,27 +54,21 @@ function fieldChanged(
  *
  * Changing search, segment, sort, order, or pageSize forces `page` to 1.
  * Patches that only touch `page` or `customerId` keep the requested page.
- *
- * @param current - Parsed params currently reflected in the URL
- * @param patch - Fields the control wants to update
- * @returns Next typed params ready for `serializeListParams`
- *
- * @example
- * ```ts
- * applyListParamsPatch(params({ page: 5 }), { pageSize: 50 }).page // → 1
- * applyListParamsPatch(params({ page: 5 }), { page: 3 }).page // → 3
- * ```
  */
 export function applyListParamsPatch(
   current: CustomerHealthUrlParams,
   patch: ListParamsPatch,
 ): CustomerHealthUrlParams {
   //////////////////////////////////
-  // 1. Merge — patch wins for provided keys; untouched fields stay as-is.
+  // 1. Merge — patch wins; canonicalize segment multi-select order.
   const next: CustomerHealthUrlParams = {
     ...current,
     ...patch,
   };
+
+  if (patch.segment !== undefined) {
+    next.segment = canonicalizeSegments(patch.segment);
+  }
   //////////////////////////////////
 
   //////////////////////////////////

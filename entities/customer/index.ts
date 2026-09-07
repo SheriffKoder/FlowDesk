@@ -28,6 +28,8 @@ export {
 } from "./model/customer-list-query";
 export {
   CUSTOMER_SEGMENTS,
+  CUSTOMER_SEGMENT_LABELS,
+  CUSTOMER_SEGMENT_OPTIONS,
   type CustomerSegment,
 } from "./model/segment";
 

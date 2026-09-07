@@ -78,7 +78,7 @@ describe("parseListParams", () => {
 
     expect(parseListParams(raw)).toEqual({
       search: "acme",
-      segment: "at_risk",
+      segment: ["at_risk"],
       page: 3,
       pageSize: 10,
       sort: "mrr",
@@ -119,11 +119,15 @@ describe("parseListParams", () => {
     expect(parseListParams({ sort: "nope", order: "desc" }).order).toBeNull();
   });
 
-  it("reads the first value from array searchParams", () => {
-    // Next.js may pass string[]; contract always takes index 0.
+  it("parses multi-select segments from comma lists and arrays", () => {
+    // Comma-joined share links and Next.js string[] both become a canonical list.
+    expect(
+      parseListParams({ segment: "at_risk,watch,nope" }),
+    ).toEqual(params({ segment: ["watch", "at_risk"] }));
+
     expect(
       parseListParams({ segment: ["watch", "healthy"], page: ["2"] }),
-    ).toEqual(params({ segment: "watch", page: 2 }));
+    ).toEqual(params({ segment: ["healthy", "watch"], page: 2 }));
   });
 });
 
@@ -143,7 +147,7 @@ describe("serializeListParams", () => {
     // serialize → parse must restore the same typed object.
     const input = params({
       search: "beta",
-      segment: "watch",
+      segment: ["watch", "at_risk"],
       page: 4,
       pageSize: 50,
       sort: "name",
@@ -152,6 +156,7 @@ describe("serializeListParams", () => {
     });
 
     const query = serializeListParamsToString(input);
+    expect(query).toContain("segment=watch%2Cat_risk");
     expect(parseListParams(new URLSearchParams(query))).toEqual(input);
   });
 
@@ -206,14 +211,20 @@ describe("resolveListSort", () => {
 describe("applyListParamsPatch", () => {
   it("resets page to 1 when search, segment, sort, or pageSize change", () => {
     // Staying on page 5 after narrowing filters would show an empty window.
-    const current = params({ page: 5, search: "a", segment: "healthy" });
+    const current = params({ page: 5, search: "a", segment: ["healthy"] });
 
     expect(applyListParamsPatch(current, { search: "b" }).page).toBe(1);
-    expect(applyListParamsPatch(current, { segment: "watch" }).page).toBe(1);
+    expect(
+      applyListParamsPatch(current, { segment: ["watch"] }).page,
+    ).toBe(1);
     expect(applyListParamsPatch(current, { sort: "name", order: "asc" }).page).toBe(
       1,
     );
     expect(applyListParamsPatch(current, { pageSize: 50 }).page).toBe(1);
+    // Same segment contents (new array) must not reset page.
+    expect(
+      applyListParamsPatch(current, { segment: ["healthy"] }).page,
+    ).toBe(5);
   });
 
   it("keeps page when only page or customerId changes", () => {
