@@ -7,3 +7,6 @@ export type { DataTableProps, TableColumnDef } from "./table";
 
 export { Pagination, getPaginationRange } from "./pagination";
 export type { PaginationProps, PaginationRange } from "./pagination";
+
+export { SearchInput } from "./search-input";
+export type { SearchInputProps } from "./search-input";

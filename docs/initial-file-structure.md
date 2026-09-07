@@ -96,7 +96,9 @@ widgets/                           # only if a composed block is reused
 
 shared/
 ├── ui/
-│   └── table/                     # DataTable (landed)
+│   ├── table/                     # DataTable (landed)
+│   ├── pagination/                # Pagination footer (landed)
+│   └── search-input/              # SearchInput debounce + rehydrate (landed)
 ├── lib/                           # debounce, cn, url helpers
 └── hooks/
 ```
@@ -107,8 +109,8 @@ shared/
 |---|---|---|
 | Configurable `DataTable` | Header + rows from column config; `onRowClick` / selection / pending | Landed |
 | `page-header` | Title + supporting paragraph | View-local for now; move to shared later |
-| `pagination-*` | Footer, page size, navigation | Expected |
-| Search input | Param label, placeholder, debounce | Expected |
+| `pagination-*` | Footer, page size, navigation | Landed |
+| Search input | Param label, placeholder, debounce | Landed |
 | Filter control | Button + dropdown; column/label/options | Expected |
 | Sort control | Header-cell island; URL sort/order | Expected |
 | Panel / drawer shell | Children slot; a11y focus trap | Expected |

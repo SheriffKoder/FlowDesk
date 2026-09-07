@@ -5,16 +5,16 @@
  *
  * Purpose: Client list island — toolbar, table, pagination, shared pending dim.
  * Used in: `CustomerHealthPage` (server composition shell).
- * Used for: Wire URL pagination (`useListUrl`) into shared `Pagination` +
- *   `CustomerTable` without putting router logic in the server page.
+ * Used for: Wire URL list controls (`useListUrl`) into search, `Pagination`,
+ *   and `CustomerTable` without putting router logic in the server page.
  *
  * Function Index:
  * - CustomerListShell({ list }) → toolbar + table + pagination
  *
  * Steps:
  * 1. Derive `isPending` / `patchParams` from current parsed URL params.
- * 2. Render toolbar (placeholder), dimmable table, and pagination footer.
- * 3. Page / page_size changes → `patchParams` → soft-nav `{ scroll: false }`.
+ * 2. Render search toolbar, dimmable table, and pagination footer.
+ * 3. Search / page / page_size → `patchParams` → soft-nav `{ scroll: false }`.
  */
 
 import { Pagination } from "@/shared/ui";
@@ -30,7 +30,7 @@ export type CustomerListShellProps = {
 };
 
 /**
- * Interactive list region: URL-driven pagination and shared pending dim.
+ * Interactive list region: URL-driven search/pagination and shared pending dim.
  * Header stays on the server composition shell above this island.
  */
 export function CustomerListShell({ list }: CustomerListShellProps) {
@@ -38,7 +38,12 @@ export function CustomerListShell({ list }: CustomerListShellProps) {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-4">
-      <CustomerHealthToolbar />
+      <CustomerHealthToolbar
+        search={list.params.search}
+        onSearchChange={(search) => {
+          patchParams({ search });
+        }}
+      />
       <CustomerTable
         rows={list.rows}
         selectedRowId={list.params.customerId}

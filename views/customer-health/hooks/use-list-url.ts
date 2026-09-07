@@ -4,8 +4,9 @@
  * @file views/customer-health/hooks/use-list-url.ts
  *
  * Purpose: Client list URL updates with pending transition (scroll: false).
- * Used in: `CustomerListShell` (pagination now; search/segment/sort later).
- * Used for: Shareable query changes without jump-to-top; dim table via `isPending`.
+ * Used in: `CustomerListShell` (search + pagination; segment/sort later).
+ * Used for: Shareable query changes without jump-to-top; dim table via delayed
+ *   `isPending` so fast/cached soft-nav does not flicker opacity.
  *
  * Function Index:
  * - useListUrl(params) → { isPending, patchParams }
@@ -13,10 +14,13 @@
  * Steps:
  * 1. Merge patch via `applyListParamsPatch` (resets page when filters/size change).
  * 2. Serialize → `router.push` inside `startTransition` with `{ scroll: false }`.
+ * 3. Expose delayed pending (default 200ms) for table/pagination dim.
  */
 
 import { usePathname, useRouter } from "next/navigation";
 import { useTransition } from "react";
+
+import { useDelayedPending } from "@/shared/hooks";
 
 import {
   applyListParamsPatch,
@@ -26,7 +30,10 @@ import {
 import type { CustomerHealthUrlParams } from "../model/list-url-params";
 
 export type UseListUrlResult = {
-  /** True while the App Router soft-navigation for list params is in flight. */
+  /**
+   * True after pending has lasted past the dim delay (not raw `useTransition`).
+   * Fast soft-nav finishes before the delay → stays false → no flicker.
+   */
   isPending: boolean;
   /** Apply a typed param patch and push the new URL. */
   patchParams: (patch: ListParamsPatch) => void;
@@ -40,7 +47,8 @@ export type UseListUrlResult = {
 export function useListUrl(params: CustomerHealthUrlParams): UseListUrlResult {
   const router = useRouter();
   const pathname = usePathname();
-  const [isPending, startTransition] = useTransition();
+  const [rawPending, startTransition] = useTransition();
+  const isPending = useDelayedPending(rawPending);
 
   function patchParams(patch: ListParamsPatch): void {
     //////////////////////////////////
