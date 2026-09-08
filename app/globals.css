@@ -67,16 +67,17 @@
     --destructive-foreground: 0 0% 100%;
     --border: 222 12% 18%;
     --input: 222 12% 18%;
-    --widget: 222 18% 9%;
+    --widget: 222 18% 8%;
     --widget-foreground: 210 20% 98%;
     --widget-border: 222 10% 12%;
     --ring: 158 45% 59%;
-    --color-success: #4caf6a;
-    --color-success-light: #305a4071;
-    --color-warning: #f4a340;
-    --color-warning-light: #5b442089;
+    /* Status badge tones — dark: emerald / yellow / red (+ translucent wash) */
+    --color-success: #34d399;
+    --color-success-light: #064e3b71;
+    --color-warning: #facc15;
+    --color-warning-light: #713f1289;
     --color-error: #f25f5c;
-    --color-error-light: #612f2e8c;
+    --color-error-light: #f25f5c33;
     --chart-1: 217 91% 60%;
     --chart-2: 160 60% 45%;
     --chart-3: 43 74% 55%;
@@ -100,8 +101,35 @@
  */
 @layer components {
   /**
+   * Work surface chrome — flat widget in light; top-lit gradient rim in dark.
+   * Used for overview cards (and can be reused on list / details widgets).
+   */
+  .widget-surface {
+    @apply border border-widget-border bg-widget text-widget-foreground;
+  }
+
+  .dark .widget-surface {
+    border-color: transparent;
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in oklab, hsl(var(--widget)) 98%, white 0%),
+        hsl(var(--widget)) 55%,
+        color-mix(in oklab, hsl(var(--widget)) 98%, black 2%)
+      )
+        padding-box,
+      linear-gradient(
+        180deg,
+        hsl(0 0% 100% / 0.05),
+        hsl(0 0% 100% / 0.025) 120%,
+        hsl(0 0% 100% / 0.018)
+      )
+        border-box;
+    box-shadow: inset 0 1px 0 0 hsl(0 0% 100% / 0.03);
+  }
+
+  /**
    * Secondary control: widget surface + widget border.
-   * Used for pagination prev/next.
    */
   .button-secondary {
     @apply border border-widget-border bg-widget text-widget-foreground;
@@ -135,7 +163,7 @@
     @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring;
     @apply disabled:pointer-events-none disabled:opacity-40;
     border-width: 1px;
-    border-color: hsl(var(--primary) / 0.3);
+    border-color: transparent;
     background-color: hsl(var(--primary) / 0.12);
     color: hsl(var(--primary));
   }
@@ -147,7 +175,7 @@
   /**
    * Active chrome control — current surface → darker → darker.
    * Mixes toward `--background` so the active chip settles into the canvas.
-   * Used for sidebar active nav icon.
+   * Used for sidebar active nav, header theme switcher, pagination page size + prev/next.
    */
   .button-active {
     @apply border border-black/5 text-foreground;
@@ -167,7 +195,7 @@
   }
 
   .data-table {
-    @apply w-full min-w-[40rem] table-fixed border-separate border-spacing-0 text-left text-sm;
+    @apply w-full min-w-[56rem] table-fixed border-separate border-spacing-0 text-left text-sm;
   }
 
   .data-table thead {

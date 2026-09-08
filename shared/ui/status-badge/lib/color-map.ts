@@ -6,13 +6,13 @@
  * Used for: Keep pill chrome + semantic colors reusable (not invoice-specific).
  *
  * Theme tokens (@app/globals.css):
- * | Token                    | Light     | Dark       |
- * | --color-success          | #2ea043   | #4caf6a    |
- * | --color-success-light    | #ddf6e3   | #305a4071  |
- * | --color-warning          | #d97706   | #f4a340    |
- * | --color-warning-light    | #fff4e5   | #5b442089  |
- * | --color-error            | #dc4c3e   | #f25f5c    |
- * | --color-error-light      | #fdecec   | #612f2e8c  |
+ * | Token                    | Light     | Dark (emerald / yellow / red) |
+ * | --color-success          | #2ea043   | #34d399                       |
+ * | --color-success-light    | #ddf6e3   | #064e3b71                     |
+ * | --color-warning          | #d97706   | #facc15                       |
+ * | --color-warning-light    | #fff4e5   | #713f1289                     |
+ * | --color-error            | #dc4c3e   | #f25f5c                       |
+ * | --color-error-light      | #fdecec   | #f25f5c33 (~20% opacity)      |
  *
  * Function Index:
  * - STATUS_BADGE_TONE_CLASS — fill + label color per tone

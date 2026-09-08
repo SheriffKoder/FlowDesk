@@ -150,7 +150,7 @@ export function AppSidebar({ variant, className }: AppSidebarProps) {
     return (
       <nav
         className={cn(
-          "flex h-16 w-full shrink-0 items-center justify-around border-t border-border/40 bg-background px-4",
+          "flex h-16 w-full shrink-0 items-center justify-around border-t border-border/40 bg-white px-4 dark:bg-background",
           className,
         )}
         aria-label="Main"
@@ -164,7 +164,7 @@ export function AppSidebar({ variant, className }: AppSidebarProps) {
   return (
     <aside
       className={cn(
-        "flex h-full shrink-0 flex-col border-r border-border/40 bg-background",
+        "flex h-full shrink-0 flex-col border-r border-border/40 dark:bg-transparent bg-white",
         APP_CHROME_RAIL_WIDTH,
         className,
       )}

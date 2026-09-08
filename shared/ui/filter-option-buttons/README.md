@@ -7,6 +7,7 @@ Dumb toggle button row from option config. No router / URL knowledge.
 - **Multi** (default): click toggles membership; `onChange` receives ordered values.
 - **Single**: click selects one; click again clears.
 - Empty `value` = nothing selected (callers treat as “all” for list filters).
+- Optional `icon` on an option: icon-only below `sm`, label from `sm` up (label always in a11y / `title`).
 
 ## Usage
 

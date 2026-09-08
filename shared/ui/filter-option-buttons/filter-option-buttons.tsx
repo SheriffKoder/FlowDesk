@@ -81,21 +81,32 @@ export function FilterOptionButtons({
       </span>
       {options.map((option) => {
         const isSelected = selected.has(option.value);
+        const Icon = option.icon;
         return (
           <button
             key={option.value}
             type="button"
             disabled={option.disabled}
             aria-pressed={isSelected}
+            title={option.label}
             className={cn(
-              "inline-flex h-9 items-center justify-center rounded-md px-3 text-sm font-normal",
+              "inline-flex h-9 items-center justify-center rounded-md text-sm font-normal",
+              Icon ? "w-9 shrink-0 px-0 sm:w-auto sm:px-3" : "px-3",
               isSelected ? "button-action" : "button-action-not-selected",
             )}
             onClick={() => {
               handleToggle(option.value);
             }}
           >
-            {option.label}
+            {Icon ? (
+              <>
+                <Icon className="size-4 sm:hidden" aria-hidden />
+                <span className="hidden sm:inline">{option.label}</span>
+                <span className="sr-only sm:hidden">{option.label}</span>
+              </>
+            ) : (
+              option.label
+            )}
           </button>
         );
       })}

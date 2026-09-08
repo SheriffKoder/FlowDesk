@@ -9,6 +9,8 @@
  * - AppShell({ children }) → flex shell around page content
  */
 
+import { MeshBackgroundHorizontal } from "@/shared/ui";
+
 import { AppHeader } from "./app-header";
 import { AppSidebar } from "./app-sidebar";
 
@@ -17,25 +19,29 @@ export type AppShellProps = {
 };
 
 /**
- * Full-viewport app frame. Children fill the remaining space (`min-h-0` for nested scroll).
+ * Full-viewport app frame.
  *
  * Layout:
- * - `md+`: rail left → (header + content)
- * - `<md`: (header + content) → bottom dock (no logo)
+ * - `md+`: rail left → (header + content); content is height-locked for nested scroll
+ * - `<md`: (header + scrollable content) → bottom dock; page content scrolls
+ * Mesh sits behind chrome; opaque header/sidebar keep it in the content canvas.
  */
 export function AppShell({ children }: AppShellProps) {
   return (
-    <div className="flex h-svh flex-col overflow-hidden bg-background md:flex-row">
-      <AppSidebar variant="rail" className="hidden md:flex" />
+    <div className="relative flex h-svh flex-col overflow-hidden md:flex-row">
+      <MeshBackgroundHorizontal />
 
-      <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+      <AppSidebar variant="rail" className="relative z-10 hidden md:flex" />
+
+      <div className="relative z-10 flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
         <AppHeader />
-        <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+        {/* Mobile: scroll the page; desktop: lock height for table/details nested scroll */}
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto md:overflow-hidden">
           {children}
         </div>
       </div>
 
-      <AppSidebar variant="dock" className="flex md:hidden" />
+      <AppSidebar variant="dock" className="relative z-10 flex md:hidden" />
     </div>
   );
 }

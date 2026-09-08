@@ -10,7 +10,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navButtonClassName = cn(
-  "button-secondary inline-flex h-9 items-center justify-center rounded-md text-sm",
+  "button-active inline-flex h-9 items-center justify-center rounded-md text-sm",
 );
 
 export type PaginationNavProps = {

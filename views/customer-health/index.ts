@@ -28,6 +28,13 @@ export {
 } from "./server/load-customer-list";
 
 export {
+  loadOverviewCards,
+  type OverviewCardsData,
+} from "./server/load-overview-cards";
+
+export type { SegmentCountRow, WelcomeMetric } from "./ui/cards";
+
+export {
   CUSTOMER_SEGMENTS,
   DEFAULT_CUSTOMER_HEALTH_URL_PARAMS,
   DEFAULT_LIST_PAGE,

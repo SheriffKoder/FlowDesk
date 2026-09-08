@@ -10,5 +10,6 @@ Locked decisions for FlowDesk. Each ADR is short: context, decision, consequence
 | [ADR-004](./004-no-tanstack-this-phase.md) | No TanStack Query this phase | Accepted |
 | [ADR-005](./005-prefetch-via-intentional-control.md) | Prefetch via dedicated button | Accepted |
 | [ADR-006](./006-list-server-drawer-client-cache.md) | List server / drawer client cache | Accepted |
+| [ADR-007](./007-server-aggregated-overview-metrics.md) | Server-aggregated overview card metrics | Accepted |
 
 When reversing a decision, supersede the ADR — do not silently edit history.

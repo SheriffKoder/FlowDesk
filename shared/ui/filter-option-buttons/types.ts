@@ -4,10 +4,14 @@
  * Purpose: Prop types for dumb multi/single select option button rows.
  */
 
+import type { LucideIcon } from "lucide-react";
+
 export type FilterOption = {
   value: string;
   label: string;
   disabled?: boolean;
+  /** When set, shown instead of the label below `sm` (label stays for a11y). */
+  icon?: LucideIcon;
 };
 
 export type FilterOptionButtonsProps = {

@@ -40,10 +40,10 @@ export function PaginationPageSizeSelect({
         <DropdownMenuTrigger asChild>
           <Button
             type="button"
-            variant="outline"
+            variant="ghost"
             size="sm"
             disabled={disabled}
-            className="button-secondary h-9 min-w-[3.25rem] justify-between gap-1 border-widget-border bg-widget px-2.5 font-normal tabular-nums shadow-none md:min-w-[4.5rem]"
+            className="button-active h-9 min-w-[3.25rem] justify-between gap-1 px-2.5 font-normal tabular-nums shadow-none md:min-w-[4.5rem]"
             aria-labelledby="pagination-rows-label"
             aria-label={`Rows per page, ${pageSize}`}
           >

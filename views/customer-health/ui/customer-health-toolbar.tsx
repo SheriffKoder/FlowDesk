@@ -10,15 +10,14 @@
  * Function Index:
  * - CustomerHealthToolbar(props) → filter row
  *
- * Steps:
- * 1. SearchInput → URL `search` (page reset via patch).
- * 2. FilterOptionButtons → URL `segment` multi-select (OR filter).
+ * Layout: single row — search grows; segments stay icon-only below `sm`.
  */
 
 import { FilterOptionButtons, SearchInput } from "@/shared/ui";
 
 import { customerHealthListConfig } from "../model/list-config";
 import type { CustomerSegment } from "../model/list-url-params";
+import { segmentCountChrome } from "../model/overview-cards-config";
 
 export type CustomerHealthToolbarProps = {
   /** Committed search from URL (`list.params.search`). */
@@ -33,6 +32,11 @@ export type CustomerHealthToolbarProps = {
 
 const segmentFilter = customerHealthListConfig.filters[0];
 
+const segmentOptions = segmentFilter.options.map((option) => ({
+  ...option,
+  icon: segmentCountChrome[option.value as CustomerSegment].icon,
+}));
+
 /**
  * List filter toolbar: search + Healthy / Watch / At risk chips.
  * No own surface — parent widget provides background + border.
@@ -45,7 +49,7 @@ export function CustomerHealthToolbar({
 }: CustomerHealthToolbarProps) {
   return (
     <div
-      className="flex shrink-0 flex-wrap items-center gap-3 px-3 py-3"
+      className="flex shrink-0 flex-nowrap items-center gap-2 px-3 py-3 sm:gap-3"
       role="search"
       aria-label="Customer list filters"
     >
@@ -55,14 +59,15 @@ export function CustomerHealthToolbar({
         placeholder={customerHealthListConfig.search.placeholder}
         value={search}
         onValueCommit={onSearchChange}
-        className="min-w-[12rem] flex-1"
+        className="min-w-0 flex-1"
       />
       <FilterOptionButtons
         label={segmentFilter.label}
         hideLabel
-        options={segmentFilter.options}
+        options={segmentOptions}
         value={segment}
         selectionMode="multi"
+        className="shrink-0 flex-nowrap"
         onChange={(next) => {
           onSegmentChange(next as CustomerSegment[]);
         }}

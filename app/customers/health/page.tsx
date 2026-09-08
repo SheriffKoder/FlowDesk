@@ -8,6 +8,7 @@ import type { Metadata } from "next";
 import {
   CustomerHealthPage,
   loadCustomerList,
+  loadOverviewCards,
 } from "@/views/customer-health";
 
 export const metadata: Metadata = {
@@ -23,6 +24,7 @@ type PageProps = {
 export default async function Page({ searchParams }: PageProps) {
   const raw = await searchParams;
   const list = loadCustomerList(raw);
+  const overview = loadOverviewCards();
 
-  return <CustomerHealthPage list={list} />;
+  return <CustomerHealthPage list={list} overview={overview} />;
 }

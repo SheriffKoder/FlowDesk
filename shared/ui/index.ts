@@ -36,3 +36,8 @@ export {
 
 export { Avatar, getInitials } from "./avatar";
 export type { AvatarProps } from "./avatar";
+
+export { MeshBackgroundHorizontal } from "./mesh-background-horizontal";
+
+export { ThinkingOrb } from "./thinking-orb";
+export type { ThinkingOrbProps } from "./thinking-orb";

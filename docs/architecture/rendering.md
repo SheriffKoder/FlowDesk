@@ -10,18 +10,20 @@
 
 ```
 page.tsx (Server)
-  └─ loadCustomerList(searchParams)  ← views/customer-health/server
-       └─ CustomerHealthPage
-            └─ CustomerListShell       ← client (list URL + details panel)
-                 ├─ toolbar / table / pagination
-                 └─ CustomerDetailsPanel → shared DetailsPanel (in-layout)
+  ├─ loadCustomerList(searchParams)   ← views/customer-health/server
+  ├─ loadOverviewCards()              ← portfolio aggregates (ADR-007)
+  └─ CustomerHealthPage
+       ├─ OverviewCardsRow            ← server props (welcome + segments + placeholder)
+       └─ CustomerListShell           ← client (list URL + details panel)
+            ├─ toolbar / table / pagination
+            └─ CustomerDetailsPanel → shared DetailsPanel (in-layout)
 ```
 
 Layout chrome (`AppShell` / `AppHeader` / sidebar) lives in `widgets/app-sidebar` and wraps all routes from `app/layout.tsx`. Page title + description come from `appPages` via `getCurrentPage`.
 
 List presentation is the dumb shared `DataTable` (`shared/ui/table`): `columns`, `data`, `getRowId`, optional `onRowClick` / `selectedRowId` / `isPending`. Domain column config stays in the view.
 
-First paint loads rows via `loadCustomerList` (entity `listCustomers`); fixtures stay behind the repository.
+First paint loads rows via `loadCustomerList` (entity `listCustomers`); overview cards get pre-aggregated metrics from `loadOverviewCards` (same entity, unfiltered portfolio — see [ADR-007](../adr/007-server-aggregated-overview-metrics.md)). Fixtures stay behind the repository.
 
 ## Loading model
 

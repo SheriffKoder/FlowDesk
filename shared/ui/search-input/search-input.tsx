@@ -130,7 +130,7 @@ export function SearchInput({
         placeholder={placeholder}
         autoComplete="off"
         spellCheck={false}
-        className="h-9 max-w-xs focus-visible:ring-primary"
+        className="h-9 w-full max-w-none placeholder:text-xs focus-visible:ring-primary sm:max-w-xs sm:placeholder:text-sm"
         aria-label={hideLabel ? label : undefined}
         onChange={(event) => {
           setDraft(event.target.value);

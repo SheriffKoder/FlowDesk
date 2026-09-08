@@ -6,11 +6,13 @@ export {
   DataTable,
   DetailsPanel,
   FilterOptionButtons,
+  MeshBackgroundHorizontal,
   Pagination,
   SearchInput,
   SortButton,
   StatusBadge,
   Avatar,
+  ThinkingOrb,
   getInitials,
   getPaginationRange,
   STATUS_BADGE_DOT_CLASS,
@@ -34,6 +36,7 @@ export type {
   StatusBadgeTone,
   TableAriaSort,
   TableColumnDef,
+  ThinkingOrbProps,
 } from "./ui";
 
 export { debounce } from "./lib";

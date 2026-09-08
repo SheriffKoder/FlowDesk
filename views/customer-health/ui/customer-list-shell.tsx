@@ -56,11 +56,11 @@ export function CustomerListShell({ list }: CustomerListShellProps) {
   const detailsTitle = selectedRow?.name ?? "Customer details";
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-4">
-      <div className="flex min-h-0 flex-1 gap-4">
+    <div className="flex flex-col gap-4 md:min-h-0 md:flex-1 md:overflow-hidden">
+      <div className="flex h-[22rem] max-h-[55dvh] flex-col gap-4 md:h-auto md:max-h-none md:min-h-0 md:flex-1 md:flex-row">
         <div
           className={cn(
-            "flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-lg border border-widget-border bg-widget text-widget-foreground",
+            "widget-surface flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-xl",
             drawer.open && "max-lg:hidden",
           )}
         >

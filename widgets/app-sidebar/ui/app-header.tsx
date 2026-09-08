@@ -68,7 +68,7 @@ export function AppHeader({
   return (
     <header
       className={cn(
-        "flex shrink-0 items-center gap-3.5 border-b border-border/40 bg-background px-6 py-3",
+        "flex shrink-0 items-center gap-3.5 border-b border-border/40 bg-white px-6 py-3 dark:bg-background",
         APP_CHROME_BRAND_HEIGHT,
         className,
       )}
