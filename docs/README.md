@@ -12,7 +12,8 @@ Application-wide documentation for FlowDesk (Customer Health overview and relate
 | [guides/](./guides/) | How to contribute, test, and work in this repo |
 
 **Working plan (local, not committed):** `app/development/project/plan-clean.md` — implementation steps and locked decisions for agents.  
-**Theme / scope drafts (local):** `app/development/project/`.
+**Theme / scope drafts (local):** `app/development/project/`.  
+**Root README** also summarizes architecture + page/folder structure for quick onboarding.
 
 Dependency direction (never reverse):
 

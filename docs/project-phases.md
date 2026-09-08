@@ -97,16 +97,18 @@ High-level stages (see `plan-clean.md` for the locked checklist):
 1. Route shells + theme-aligned chrome  
 2. URL contract helpers  
 3. Mock/API + entity schemas  
-4. Page header + configurable table (mock)  
+4. Configurable table (mock)  
 5. Server list fetch  
 6. Pagination (URL) + pending dim  
 7. Search (debounce, reset page) + empty states  
 8. Segment filter  
-9. Sorting system (component provided when ready)  
-10. Drawer shell + state/URL hook  
+9. Multi-level sorting (`sort=field:order,...`)  
+10. Details panel shell + state/URL hook  
 11. Health data + loading/error/retry + client cache  
 12. Prefetch button  
-13. Audit pass (a11y, errors, theme, skeletons)
+13. App chrome (`AppShell` / sidebar / `AppHeader`)  
+14. Overview cards + server aggregates (ADR-007)  
+15. Audit pass (a11y, errors, theme, skeletons)
 
 **UX ideas (carry through Phase 6)**
 - True empty vs filtered empty messaging.
@@ -141,6 +143,6 @@ High-level stages (see `plan-clean.md` for the locked checklist):
 | 1 Product brief | Done |
 | 2 Design settle | Done (theme doc + globals tuned) |
 | 3 Plan and review | Done (ADRs + plan-clean) |
-| 4 Initial documentation | Done (`docs/`) |
+| 4 Initial documentation | Done (`docs/` + root README architecture/structure) |
 | 5 File structure scaffold | Done |
-| 6 Implementation | In progress (Foundation: URL contract helpers + Vitest) |
+| 6 Implementation | Done (list + panel + overview cards + app chrome; Step 13 audit closed with known gaps in plan-clean) |

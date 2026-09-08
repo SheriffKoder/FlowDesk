@@ -26,7 +26,7 @@ Skip heavy tests on pure presentational chrome unless it encodes real rules.
 
 ## Integration (three required steps)
 
-1. **`GET /api/customers`** — search, segment, page, page_size, sort/order against fixtures. Landed (`customers-list.api.test.ts`).  
+1. **`GET /api/customers`** — search, segment, page, page_size, multi-level sort against fixtures. Landed (`customers-list.api.test.ts`).  
 2. **`GET /api/customers/{id}/health`** — happy path + not-found. Landed (`customer-health.api.test.ts`).  
 3. **List wiring** — `searchParams` → `loadCustomerList` → shaped list props. Landed (`customer-list-page.test.ts`).
 

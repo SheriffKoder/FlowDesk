@@ -64,16 +64,17 @@ app/
 │   └── not-found.tsx
 └── api/
     └── customers/
-        ├── route.ts               # GET list (placeholder → implement later)
-        └── [id]/health/route.ts
+        ├── route.ts               # GET list
+        └── [id]/health/route.ts   # GET health by id
 
 views/
 └── customer-health/
     ├── README.md
-    ├── ui/                        # toolbar, CustomerTable, list shell (+ details)
-    ├── hooks/
-    ├── model/                     # list-config, list-url-params, columns, table props
-    └── lib/                       # parse/serialize list URL, page reset/clamp, resolve sort
+    ├── ui/                        # cards/, toolbar, CustomerTable, list shell
+    ├── hooks/                     # useListUrl (+ delayed pending)
+    ├── model/                     # list-config, overview-cards-config, URL params, columns
+    ├── server/                    # loadCustomerList, loadOverviewCards
+    └── lib/                       # parse/serialize list URL, page reset/clamp, resolve sort, metric formatters
 
 features/
 └── customer-drawer/               # details open/close + URL mirror + health body
@@ -104,9 +105,12 @@ shared/
 │   ├── search-input/              # SearchInput debounce + rehydrate (landed)
 │   ├── filter-option-buttons/     # Multi/single option button row (landed)
 │   ├── sort-button/               # Dual filled-triangle header sort toggle (landed)
-│   └── details-panel/             # In-layout DetailsPanel + focus trap (landed)
+│   ├── details-panel/             # In-layout DetailsPanel + focus trap (landed)
+│   ├── status-badge/              # Segment / status pills + tone maps (landed)
+│   ├── avatar/                    # Initials fallback avatar (landed)
+│   └── thinking-orb/              # Canvas orb for overview placeholder (landed)
 ├── lib/                           # debounce, cn, url helpers
-└── hooks/
+└── hooks/                         # useDelayedPending
 ```
 
 ## Shared UI for this feature
@@ -115,11 +119,13 @@ shared/
 |---|---|---|
 | Configurable `DataTable` | Header + rows from column config; `onRowClick` / selection / pending; optional `aria-sort` | Landed |
 | `page-header` | Title + supporting paragraph | Replaced by layout `AppHeader` in `widgets/app-sidebar` |
+| Overview cards | Welcome metrics, segment counts, placeholder orb | Landed (`views/.../ui/cards`) |
 | `pagination-*` | Footer, page size, navigation | Landed |
 | Search input | Param label, placeholder, debounce | Landed |
 | Filter control | Multi-select option button row (`FilterOptionButtons`) | Landed |
 | Sort control | Header-cell `SortButton`; multi-level URL `sort=field:order,...` | Landed |
 | Details panel | In-layout side panel; focus trap, Escape, close (not overlay) | Landed |
+| Status badge / Avatar | Segment pills + owner initials | Landed |
 
 ## Public API rule
 
