@@ -76,10 +76,14 @@ export function AppHeader({
       {page && Icon ? (
         <div className="flex min-w-0 flex-1 items-center gap-3.5">
           <span
-            className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-accent text-accent-foreground"
+            className="squircle relative flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-primary text-white/80"
             aria-hidden
           >
-            <Icon className="size-5" />
+            <span
+              className="pointer-events-none absolute inset-0 bg-gradient-to-br from-black/10 via-black/20 to-black/40"
+              aria-hidden
+            />
+            <Icon className="relative z-10 size-5" />
           </span>
           <div className="min-w-0 flex-1 space-y-0.5">
             <h1 className="truncate text-base font-semibold tracking-tight text-foreground">

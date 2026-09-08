@@ -9,7 +9,12 @@
  *
  * Function Index:
  * - UserArea(props?) → avatar (+ name/date column on `sm+`)
+ *
+ * Note: `new Date()` must not run during Client Component prerender
+ * (Next.js blocking-prerender-current-time-client). Date is set after mount.
  */
+
+import { useEffect, useState } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -29,6 +34,14 @@ export type UserAreaProps = {
   initials?: string;
 };
 
+function toDateTimeAttr(date: Date): string {
+  return [
+    date.getFullYear(),
+    String(date.getMonth() + 1).padStart(2, "0"),
+    String(date.getDate()).padStart(2, "0"),
+  ].join("-");
+}
+
 /**
  * Compact user chip for the layout header.
  */
@@ -37,18 +50,19 @@ export function UserArea({
   name = DEMO_USER.name,
   initials = DEMO_USER.initials,
 }: UserAreaProps) {
-  const today = new Date();
-  const todayLabel = formatHeaderDate(today);
-  const dateTime = [
-    today.getFullYear(),
-    String(today.getMonth() + 1).padStart(2, "0"),
-    String(today.getDate()).padStart(2, "0"),
-  ].join("-");
+  const [today, setToday] = useState<Date | null>(null);
+
+  useEffect(() => {
+    setToday(new Date());
+  }, []);
+
+  const todayLabel = today ? formatHeaderDate(today) : null;
+  const dateTime = today ? toDateTimeAttr(today) : undefined;
 
   return (
     <div
       className={cn("flex shrink-0 items-center gap-2.5", className)}
-      aria-label={`${name}, ${todayLabel}`}
+      aria-label={todayLabel ? `${name}, ${todayLabel}` : name}
     >
       <span
         className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary-foreground text-xs font-semibold text-primary ring-1 ring-border"
@@ -61,7 +75,14 @@ export function UserArea({
           {name}
         </p>
         <p className="truncate text-xs leading-tight text-muted-foreground">
-          <time dateTime={dateTime}>{todayLabel}</time>
+          {todayLabel && dateTime ? (
+            <time dateTime={dateTime}>{todayLabel}</time>
+          ) : (
+            <span className="invisible" aria-hidden>
+              {/* Reserve line height until mount to avoid layout jump */}
+              Monday 1 Jan 2000
+            </span>
+          )}
         </p>
       </div>
     </div>
