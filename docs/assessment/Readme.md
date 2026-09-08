@@ -1,4 +1,4 @@
-# Idealogic Frontend Assessment — Revisited
+# Frontend Assessment — Revisited
 
 Around seven months ago, I completed this assessment as part of
 a Frontend Engineer hiring process.
