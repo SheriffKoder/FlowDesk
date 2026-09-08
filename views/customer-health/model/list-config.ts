@@ -17,7 +17,18 @@ import {
   CUSTOMER_LIST_SEGMENT_FILTER_OPTIONS,
   CUSTOMER_LIST_SORT_FIELDS,
   DEFAULT_CUSTOMER_LIST_SORT_KEYS,
+  type CustomerSegment,
 } from "@/entities/customer";
+import type { StatusBadgeTone } from "@/shared/ui";
+import {
+  Activity,
+  Building2,
+  CircleDollarSign,
+  Clock,
+  Layers,
+  User,
+  type LucideIcon,
+} from "lucide-react";
 
 /////////////////////////////////////////////////////////////
 // Cell format ids — view registry in customer-table-columns
@@ -28,7 +39,8 @@ export type CustomerHealthCellFormat =
   | "currencyUsd"
   | "shortDate"
   | "number"
-  | "segmentLabel";
+  | "segmentLabel"
+  | "ownerAvatar";
 
 export type CustomerHealthColumnConfig = {
   /** Catalog field id (`name`, `last_active`, …). */
@@ -36,6 +48,8 @@ export type CustomerHealthColumnConfig = {
   /** Table column id (camelCase for DOM / React keys). */
   columnId: string;
   format: CustomerHealthCellFormat;
+  /** Optional Lucide icon rendered before the header label. */
+  icon?: LucideIcon;
   /** Applied to `<td>` (and `<th>` when `headerClassName` omitted). */
   className?: string;
   /**
@@ -86,6 +100,16 @@ export const customerHealthListConfig = {
     },
   ],
 
+  /**
+   * Domain segment → shared status badge tone.
+   * Keeps entity enums out of `shared/ui/status-badge`.
+   */
+  segmentBadgeTones: {
+    healthy: "success",
+    watch: "warning",
+    at_risk: "error",
+  } as const satisfies Record<CustomerSegment, StatusBadgeTone>,
+
   pagination: {
     sizes: [10, 20, 50] as const,
     defaultSize: 20 as const,
@@ -113,6 +137,7 @@ export const customerHealthListConfig = {
       fieldId: "name",
       columnId: "name",
       format: "text",
+      icon: Building2,
       /** Width only — truncate is on the name span so the Open pill stays visible. */
       className: "w-[28%] max-w-0",
       headerClassName: "w-[28%]",
@@ -121,6 +146,7 @@ export const customerHealthListConfig = {
       fieldId: "mrr",
       columnId: "mrr",
       format: "currencyUsd",
+      icon: CircleDollarSign,
       className: "w-[12%] tabular-nums",
       headerClassName: "w-[12%]",
     },
@@ -128,6 +154,7 @@ export const customerHealthListConfig = {
       fieldId: "last_active",
       columnId: "lastActive",
       format: "shortDate",
+      icon: Clock,
       className: "w-[16%] text-muted-foreground",
       headerClassName: "w-[16%]",
     },
@@ -135,24 +162,28 @@ export const customerHealthListConfig = {
       fieldId: "health",
       columnId: "health",
       format: "number",
+      icon: Activity,
       className: "w-[10%] font-medium tabular-nums",
       headerClassName: "w-[10%]",
     },
     {
       fieldId: "owner",
       columnId: "owner",
-      format: "text",
-      className: "w-[18%] max-w-0 truncate",
+      format: "ownerAvatar",
+      icon: User,
+      /** Width only — truncate lives on the name span so the avatar stays visible. */
+      className: "w-[18%] max-w-0",
       headerClassName: "w-[18%]",
     },
     {
       fieldId: "segment",
       columnId: "segment",
       format: "segmentLabel",
+      icon: Layers,
       className: "w-[16%]",
       headerClassName: "w-[16%]",
     },
-  ] as const satisfies ReadonlyArray<CustomerHealthColumnConfig>,
+  ] satisfies ReadonlyArray<CustomerHealthColumnConfig>,
 } as const;
 
 export type CustomerHealthListConfig = typeof customerHealthListConfig;

@@ -11,5 +11,7 @@ Cross-domain presentational primitives (no business logic).
 | `FilterOptionButtons` (`filter-option-buttons/`) | Config-driven multi/single toggle button row |
 | `SortButton` (`sort-button/`) | Dual filled-triangle header sort toggle (dumb) |
 | `DetailsPanel` (`details-panel/`) | In-layout side panel: title, close, focus trap, Escape (not overlay) |
+| `StatusBadge` (`status-badge/`) | Semantic status pill (dot + label); tone maps in `status-badge/lib` |
+| `Avatar` (`avatar/`) | Circular image or muted initials fallback (`getInitials`) |
 
 Import via `@/shared/ui` (or `@/shared`) — no deep imports across slices.

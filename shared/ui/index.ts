@@ -22,3 +22,17 @@ export type { SortButtonProps, SortDirection } from "./sort-button";
 
 export { DetailsPanel } from "./details-panel";
 export type { DetailsPanelProps } from "./details-panel";
+
+export { StatusBadge } from "./status-badge";
+export type { StatusBadgeProps } from "./status-badge";
+export {
+  STATUS_BADGE_DOT_CLASS,
+  STATUS_BADGE_PILL_CLASS,
+  STATUS_BADGE_TONES,
+  STATUS_BADGE_TONE_CLASS,
+  statusBadgeClassName,
+  type StatusBadgeTone,
+} from "./status-badge";
+
+export { Avatar, getInitials } from "./avatar";
+export type { AvatarProps } from "./avatar";

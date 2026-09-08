@@ -12,7 +12,13 @@ import {
   type CustomerListItem,
 } from "@/entities/customer";
 import { CustomerPrefetchButton } from "@/features/customer-drawer";
-import { SortButton, type TableColumnDef } from "@/shared/ui";
+import {
+  Avatar,
+  SortButton,
+  StatusBadge,
+  type TableColumnDef,
+} from "@/shared/ui";
+import type { LucideIcon } from "lucide-react";
 
 import {
   listSortAriaForColumn,
@@ -92,6 +98,8 @@ function formatCell(
       return String(raw);
     case "segmentLabel":
       return customerSegmentLabel(row.segment);
+    case "ownerAvatar":
+      return formatText(String(raw ?? ""));
     default: {
       const _exhaustive: never = format;
       return _exhaustive;
@@ -103,8 +111,21 @@ function formatCell(
 // Sortable header chrome
 /////////////////////////////////////////////////////////////
 
+/** Icon + label for a column header (icon from list-config). */
+function headerLabel(label: string, Icon?: LucideIcon) {
+  return (
+    <span className="inline-flex min-w-0 items-center gap-1.5">
+      {Icon ? (
+        <Icon className="size-3.5 shrink-0 opacity-70" aria-hidden />
+      ) : null}
+      <span className="truncate pt-.5">{label}</span>
+    </span>
+  );
+}
+
 function sortableHeader(options: {
   label: string;
+  icon?: LucideIcon;
   sortKey: ListSortKey;
   sorts: readonly ListSortSpec[];
   onSortToggle: (key: ListSortKey) => void;
@@ -115,7 +136,7 @@ function sortableHeader(options: {
 
   return (
     <div className="flex items-center justify-between gap-1">
-      <span>{options.label}</span>
+      {headerLabel(options.label, options.icon)}
       <SortButton
         label={options.label}
         direction={direction}
@@ -170,6 +191,35 @@ function nameCell(
   );
 }
 
+/**
+ * Segment cell: shared StatusBadge (tone from list-config map).
+ * Label stays text so segment is never color-only.
+ */
+function segmentCell(row: CustomerListRow) {
+  const tone = customerHealthListConfig.segmentBadgeTones[row.segment];
+
+  return (
+    <StatusBadge tone={tone}>{customerSegmentLabel(row.segment)}</StatusBadge>
+  );
+}
+
+/**
+ * Owner cell: Avatar (initials until image URLs exist) + truncated name.
+ */
+function ownerCell(row: CustomerListRow) {
+  const owner = formatText(row.owner);
+  const isEmpty = owner === "—";
+
+  return (
+    <div className="flex min-w-0 items-center gap-2">
+      <Avatar name={isEmpty ? "" : row.owner} sizeClassName="size-6" />
+      <span className="min-w-0 flex-1 truncate" title={owner}>
+        {owner}
+      </span>
+    </div>
+  );
+}
+
 function buildColumn(
   column: CustomerHealthColumnConfig,
   options: BuildCustomerTableColumnsOptions,
@@ -184,25 +234,36 @@ function buildColumn(
     );
 
   const isNameColumn = column.columnId === "name";
+  const isSegmentColumn = column.format === "segmentLabel";
+  const isOwnerColumn = column.format === "ownerAvatar";
 
   return {
     id: column.columnId,
     header: sortable
       ? sortableHeader({
           label,
+          icon: column.icon,
           sortKey,
           sorts: options.sorts,
           onSortToggle: options.onSortToggle,
           isPending: options.isPending,
         })
-      : label,
+      : headerLabel(label, column.icon),
     ariaSort: sortable
       ? listSortAriaForColumn(options.sorts, sortKey)
       : undefined,
-    cell: (row) =>
-      isNameColumn
-        ? nameCell(row, options)
-        : formatCell(column.format, row, field.path),
+    cell: (row) => {
+      if (isNameColumn) {
+        return nameCell(row, options);
+      }
+      if (isSegmentColumn) {
+        return segmentCell(row);
+      }
+      if (isOwnerColumn) {
+        return ownerCell(row);
+      }
+      return formatCell(column.format, row, field.path);
+    },
     className: column.className,
     headerClassName: column.headerClassName ?? column.className,
   };

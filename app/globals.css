@@ -32,6 +32,13 @@
     --widget-border: 220 10% 94%;
     /* Focus ring matches brand primary */
     --ring: 242 82% 63%;
+    /* Status badge tones (pill fill + label) */
+    --color-success: #2ea043;
+    --color-success-light: #ddf6e3;
+    --color-warning: #d97706;
+    --color-warning-light: #fff4e5;
+    --color-error: #dc4c3e;
+    --color-error-light: #fdecec;
     /* Usage charts: blue, teal, amber, cyan, red */
     --chart-1: 217 91% 50%;
     --chart-2: 173 58% 39%;
@@ -64,6 +71,12 @@
     --widget-foreground: 210 20% 98%;
     --widget-border: 222 10% 12%;
     --ring: 158 45% 59%;
+    --color-success: #4caf6a;
+    --color-success-light: #305a4071;
+    --color-warning: #f4a340;
+    --color-warning-light: #5b442089;
+    --color-error: #f25f5c;
+    --color-error-light: #612f2e8c;
     --chart-1: 217 91% 60%;
     --chart-2: 160 60% 45%;
     --chart-3: 43 74% 55%;

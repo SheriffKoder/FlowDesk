@@ -9,9 +9,18 @@ export {
   Pagination,
   SearchInput,
   SortButton,
+  StatusBadge,
+  Avatar,
+  getInitials,
   getPaginationRange,
+  STATUS_BADGE_DOT_CLASS,
+  STATUS_BADGE_PILL_CLASS,
+  STATUS_BADGE_TONES,
+  STATUS_BADGE_TONE_CLASS,
+  statusBadgeClassName,
 } from "./ui";
 export type {
+  AvatarProps,
   DataTableProps,
   DetailsPanelProps,
   FilterOption,
@@ -21,6 +30,8 @@ export type {
   SearchInputProps,
   SortButtonProps,
   SortDirection,
+  StatusBadgeProps,
+  StatusBadgeTone,
   TableAriaSort,
   TableColumnDef,
 } from "./ui";

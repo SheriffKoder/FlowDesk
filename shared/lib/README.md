@@ -6,4 +6,4 @@ Pure helpers (no I/O).
 |---|---|
 | `debounce` | Quiet-period collapse with `cancel` / `flush` (SearchInput commits use an effect timer; this helper is the reusable primitive) |
 
-ClassName merge stays in `@/lib/utils` (`cn`). List URL parse/serialize live under the Customer Health view until a second list route needs them.
+ClassName merge stays in `@/lib/utils` (`cn`). List URL parse/serialize live under the Customer Health view until a second list route needs them. Status badge maps live with the UI in `shared/ui/status-badge/lib`.
