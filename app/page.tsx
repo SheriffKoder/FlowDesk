@@ -1,13 +1,8 @@
-import React from 'react'
-import { ThemeSwitcher } from '@/components/theme-switcher'
+import { redirect } from "next/navigation";
 
-const page = () => {
-  return (
-    <div className='flex flex-col items-center justify-center h-screen'>
-      <h1>Hello World</h1>
-      <ThemeSwitcher />
-    </div>
-  )
+/**
+ * Root route — send visitors straight to Customer Health.
+ */
+export default function HomePage() {
+  redirect("/customers/health");
 }
-
-export default page
